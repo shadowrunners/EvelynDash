@@ -1,8 +1,7 @@
-import Navbar from './Navbar';
-import Features from './Features';
-import Footer from './Footer';
-import { Developers } from './Developers';
-import Hero from './Hero';
-import Stats from './Stats';
+import Navbar from './home-nav';
+import Features from './home-features';
+import Footer from './home-footer';
+import Hero from './home-hero';
+import SupportBanner from './home-banner';
 
-export { Developers, Features, Footer, Hero, Navbar, Stats };
+export { Features, Footer, Hero, Navbar, SupportBanner };
