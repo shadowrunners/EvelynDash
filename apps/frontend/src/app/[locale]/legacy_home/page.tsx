@@ -1,6 +1,6 @@
 'use client';
 
-import { useSelfUserQuery } from '@/utils/API/hooks';
+import { useSelfUserQuery } from '@/hooks/hooks';
 import { useTranslations } from 'next-intl';
 import { GuildSelect } from '@UI';
 

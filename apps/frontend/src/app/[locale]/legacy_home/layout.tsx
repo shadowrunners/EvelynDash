@@ -1,7 +1,7 @@
 'use client';
 
 import { LoadingPanel, QueryStatus } from '@/components/panels';
-import { useSelfUserQuery } from '@/utils/API/hooks';
+import { useSelfUserQuery } from '@/hooks/hooks';
 import type { ReactNode } from 'react';
 import Image from 'next/image';
 import { Profile } from '@UI';
