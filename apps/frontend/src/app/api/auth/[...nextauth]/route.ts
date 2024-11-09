@@ -18,12 +18,14 @@ const handler = NextAuth({
 			return token;
 		},
 		async session({ session, token }) {
-			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-			// @ts-ignore
 			session.accessToken = token.accessToken;
+			session.user.id = token.sub;
+			session.user.name = token.name;
+			session.user.avatarURL = token.picture;
 
 			return session;
 		},
+		// TODO: Redirect user to /pickaguild after authentication
 	},
 	pages: {
 		signOut: '/',
