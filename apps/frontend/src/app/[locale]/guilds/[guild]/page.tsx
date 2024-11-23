@@ -1,93 +1,73 @@
 'use client';
 
-import { Card, CardContent, CardFooter, Button } from '@/components/ui';
-import { LoadingPanel, QueryStatus } from '@/components/panels';
-import { config } from '@/config/common';
+import { Card, CardContent, CardFooter, Button, CardTitle, CardHeader } from '@/components/ui';
 import { useTranslations } from 'next-intl';
 import { BiSolidErrorAlt } from 'react-icons/bi';
 import { FaRobot } from 'react-icons/fa';
-import { useGuildInfoQuery } from '@/utils/API/hooks';
+import { useCurrentGuild, useGuildInfoQuery } from '@/hooks';
 import { useRouter } from 'next/navigation';
-import { getFeatures } from '@/utils/util';
+import { getFeatures } from '@/utils';
 import type { HVGuild } from '@/types/types';
+import { useGuild } from '@/components/contexts/guildcontext';
+import { Link } from '@/i18n/routing';
 
-const GuildPage = ({ params }: { params: { guild: string }}) => {
-	const guild = params.guild;
-	const t = useTranslations('error');
-	const query = useGuildInfoQuery(guild);
-
-	return (
-		<QueryStatus query={query} loading={<LoadingPanel />} error={t('load')}>
-			{query?.data?.id != null ? (
-				<GuildPanel guild={guild} data={query.data} />
-			) : (<NotJoined guild={guild} />)}
-		</QueryStatus>
-	);
-};
-
-function GuildPanel({ guild: id, data }: { guild: string; data: HVGuild }) {
-	const Router = useRouter();
-	const t = useTranslations('dash');
+export default function GuildPage() {
+	const guild = useGuild();
+	const features = getFeatures();
 
 	return (
-		<div className='flex flex-col gap-5 text-white'>
-			<h1 className='text-[23px] font-poppins font-semibold mt-5 ml-2'>{t('features.name')}</h1>
-			<div className="flex-row grid grid-cols-1 md:grid-cols-3 2xl:grid-cols-3 gap-3">
-				{getFeatures().map((feature) => (
-					<Card className='bg-secondary text-white border'>
-						<CardContent className='flex flex-gap gap-3 mt-5'>
-							<div className='flex rounded-xl w-[50px] h-[50px] text-3xl bg-primary border justify-center items-center'>
-								{feature.icon}
-							</div>
-							<div className="flex-1">
-								<p className="font-semibold text-base md:text-lg">
-									{feature.name}
-								</p>
-								<p className="text-sm md:text-md text-muted-foreground">
-									{feature.description}
-								</p>
-							</div>
-						</CardContent>
-						<CardFooter>
-							<Button
-								variant='default'
-								className='rounded-2xl text-white font-poppins font-semibold bg-primary'
-								onClick={() => Router.push(`/guilds/${id}/features/${feature.id}`)}
-							>
-								{data?.enabledFeatures?.includes(feature.id) ? t('button.configfeature') : t('button.enablefeature')}
-							</Button>
-						</CardFooter>
-					</Card>
-				))}
+		<div className="">
+			<h1 className='text-xl font-semibold'>Welcome back, what would you like to customize?</h1>
+
+			<div className='mt-5 text-white'>
+				<section className='flex flex-row text-xl'>
+					<h1>You are currently customizing</h1><h1 className="font-bold ml-1">{guild?.data.name}</h1>
+				</section>
+				<section className='bg-white p-3 rounded-xl text-black'>
+					<h1 className='font-bold font-sans text-xl mt-2'>Server Information</h1>
+					<p>
+						Members: {guild?.data.approximate_member_count}
+					</p>
+					<p>
+						Channels:
+					</p>
+					<p>
+						Placeholder so it ain't empty
+					</p>
+				</section>
+			</div>
+			<div className='flex flex-col gap-5 mt-5'>
+				<h1 className='font-semibold text-[23px] font-sans'>Features</h1>
+				<section className='flex-row grid grid-cols-1 md:grid-cols-3 2xl:grid-cols-3 gap-3'>
+					{features.map((feature) => (
+						<Card className='bg-primary text-white font-sans'>
+							<CardContent className='flex flex-gap gap-3 mt-5'>
+								<div className='flex rounded-xl w-[50px] h-[50px] text-3xl bg-black border justify-center items-center'>
+									<feature.icon className='text-white' />
+								</div>
+								<div className="flex-1">
+									<p className="font-semibold text-base md:text-lg">
+										{feature.name}
+									</p>
+									<p className="text-sm md:text-md text-muted-foreground">
+										{feature.description}
+									</p>
+								</div>
+							</CardContent>
+							<CardFooter>
+								<Link href={`/guilds/${guild?.data.id}${feature.href}`}>
+									<Button
+										variant='default'
+										className='rounded-2xl text-white font-sans font-semibold bg-black'
+									>
+										Manage
+									</Button>
+								</Link>
+							</CardFooter>
+						</Card>
+					))}
+				</section>
 			</div>
 		</div>
-	);
+	)
 }
-
-function NotJoined({ guild }: { guild: string }) {
-	const t = useTranslations('error');
-	const t2 = useTranslations('dash');
-	const Router = useRouter();
-
-	return (
-		<div className='flex justify-center items-center flex-col gap-3 h-full p-5'>
-			<BiSolidErrorAlt className='w-[50px] h-[50px] text-white' />
-			<h1 className='text-xl font-semibold text-white'>
-				{t('not_found')}
-			</h1>
-			<h1 className='text-center text-dimWhite'>
-				{t('not_found_desc')}
-			</h1>
-			<Button
-				variant='outline'
-				className='px-6 text-white'
-				onClick={() => Router.push(`${config.inviteUrl}&guild_id=${guild}`)}
-			>
-				<FaRobot className='mr-2 text-white' />
-				{t2('button.invite')}
-			</Button>
-		</div>
-	);
-}
-
-export default GuildPage;
