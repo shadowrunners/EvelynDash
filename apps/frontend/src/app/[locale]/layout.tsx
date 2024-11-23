@@ -1,17 +1,25 @@
-import { NextIntlClientProvider, useMessages } from 'next-intl';
+import { NextIntlClientProvider } from 'next-intl';
+import { getMessages } from 'next-intl/server';
+import { notFound } from 'next/navigation';
+import { routing } from '@/i18n/routing';
+
 import type { ReactNode } from 'react';
 import '@/styles/global.css';
 
 import CookieConsent from '@/components/ui/cookieconsent';
 
-export default function LocaleLayout({
+export default async function LocaleLayout({
 	children,
-	params: { locale },
+	params: { locale }
 }: {
-	children: ReactNode,
-	params: { locale: string }
+	children: ReactNode;
+	params: { locale: string };
 }) {
-	const messages = useMessages();
+	if (!routing.locales.includes(locale as any)) {
+		notFound();
+	};
+
+	const messages = await getMessages();
 
 	return (
 		<html lang={locale}>
