@@ -9,43 +9,49 @@ import {
 	Req,
 	HttpException,
 	HttpStatus,
+	UseGuards,
 } from '@nestjs/common';
-import { SecureStorage } from '../../utils/secureStorage';
-import { BotService } from '../../services/bot.service';
+import { BotService } from '../../bot/services/bot.service';
 import { FastifyRequest } from 'fastify';
 import { config } from 'dotenv';
 import { GuildsService } from '../services/guild.service';
 import { EmbedInterface } from '../interfaces/guild.interface';
+import { ChannelType } from '@discordjs/core';
+import { AuthGuard } from '../guards/auth.guard';
+import { EncryptionService } from '../services/encryption.service';
 
 config();
 
 @Controller('/guilds/:guild')
+@UseGuards(AuthGuard)
 export class GuildController {
-	private secureStorage: SecureStorage;
-
 	constructor(
 		private readonly bot: BotService,
 		private readonly guilds: GuildsService,
-	) {
-		this.secureStorage = new SecureStorage();
-	}
+		private readonly encryption: EncryptionService,
+	) {}
 
 	@Get()
-	async getGuild(
-		@Req() { headers }: FastifyRequest['raw'],
-		@Param('guild') guild: string,
-	): Promise<unknown> {
+	async getGuild(@Param('guild') guild: string): Promise<unknown> {
 		if (!guild) throw new HttpException('Missing guild ID', HttpStatus.BAD_REQUEST);
-		await this.bot.checkPermissions(headers.authorization, guild);
 
 		try {
-			const data = await this.bot.api.guilds.get(guild);
+			const data = await this.bot.api.guilds.get(guild, { with_counts: true });
+			if (!data) throw new HttpException('I am not in this guild', HttpStatus.UNAUTHORIZED)
+
 			const enabledFeatures = await this.bot.getEnabledFeatures(guild);
+			const channels = await this.bot.api.guilds.getChannels(guild);
 
 			return {
-				id: data?.id,
 				name: data?.name,
-				icon: data?.icon,
+				id: data?.id,
+				icon: `https://cdn.discordapp.com/icons/${data.id}/${data.icon}.webp?size=96`,
+				approximate_member_count: data.approximate_member_count,
+				approximate_channel_count: channels.length,
+				channels,
+				textChannels: channels.filter((channel) => channel.type === ChannelType.GuildText).length,
+				voiceChannels: channels.filter((channel) => channel.type === ChannelType.GuildVoice).length,
+				ownerID: data?.owner_id,
 				enabledFeatures,
 			};
 		}
@@ -55,24 +61,52 @@ export class GuildController {
 		}
 	}
 
-	@Get('/features/antiphishing')
-	async getAPFeature(@Param('guild') guild: string) {
-		const data = await this.guilds.getGuild(guild);
+	// testing an idea here
+	// @Get('/feature/:feature')
+	// async getFeature(@Param('feature') feature: string) {
+	//	return `Hit from get feature! Your feature is: ${feature}`;
+	// }
+
+	@Get('/features/automod')
+	async getAMFeature(@Param('guild') guild: string) {
+		const data = await this.guilds.getFeature(guild, 'automod');
 		if (!data) return null;
 
 		return {
-			enabled: data?.antiphishing?.enabled,
+			alertsChannel: data?.automod.alertsChannel,
+			nsfwinvitelinks: data?.automod?.nsfwinvitelinks,
 		};
+	}
+
+	// needs a rework
+	// @Post('/features/automod')
+	// async enableAMFeature(@Param('guild') guild: string) {
+	//	await this.guilds.update(guild, {
+	//		automod: {
+	//			enabled: true,
+	//		},
+	//	});
+	//
+	//	return { status: HttpStatus.OK };
+	//}
+
+	// needs to be implemented (probably reworked as well)
+	// @Post('/features/automod/createrule')
+	// async enableRule() {}
+
+	@Get('/features/antiphishing')
+	async getAPFeature(@Param('guild') guild: string) {
+		const data = await this.guilds.getFeature(guild, 'antiphishing');
+		if (!data) return null;
+
+		return data;
 	}
 
 	@Post('/features/antiphishing')
 	async enableAPFeature(
-		@Req() { headers }: FastifyRequest['raw'],
 		@Param('guild') guild: string,
 	) {
-		await this.bot.checkPermissions(headers.authorization, guild);
-
-		await this.guilds.updateFeature(guild, {
+		await this.guilds.update(guild, {
 			antiphishing: {
 				enabled: true,
 			},
@@ -82,13 +116,8 @@ export class GuildController {
 	}
 
 	@Delete('/features/antiphishing')
-	async disableAPFeature(
-		@Param('guild') guild: string,
-		@Req() { headers }: FastifyRequest['raw'],
-	) {
-		await this.bot.checkPermissions(headers.authorization, guild);
-
-		await this.guilds.updateFeature(guild, {
+	async disableAPFeature(@Param('guild') guild: string) {
+		await this.guilds.update(guild, {
 			antiphishing: {
 				enabled: false,
 			},
@@ -99,7 +128,7 @@ export class GuildController {
 
 	@Get('/features/confessions')
 	async getCFFeature(@Param('guild') guild: string) {
-		const data = await this.guilds.getGuild(guild);
+		const data = await this.guilds.getFeature(guild, 'confessions');
 		if (!data) return null;
 
 		return {
@@ -109,10 +138,8 @@ export class GuildController {
 	}
 
 	@Post('/features/confessions')
-	async enableCFFeature(@Req() req: FastifyRequest['raw'], @Param('guild') guild: string) {
-		await this.bot.checkPermissions(req.headers.authorization, guild);
-
-		await this.guilds.updateFeature(guild, {
+	async enableCFFeature(@Param('guild') guild: string) {
+		await this.guilds.update(guild, {
 			confessions: {
 				enabled: true,
 			},
@@ -122,30 +149,24 @@ export class GuildController {
 	}
 
 	@Patch('/features/confessions')
-	async updateCFFeature(
-		@Req() req: FastifyRequest['raw'],
-		@Param('guild') guild: string,
-		@Body() body: ConfessionsResponse,
-	) {
-		const data = await this.guilds.getGuild(guild);
-
-		await this.bot.checkPermissions(req.headers.authorization, guild);
+	async updateCFFeature(@Param('guild') guild: string, @Body() body: ConfessionsResponse) {
+		const data = await this.guilds.getFeature(guild, 'confessions');
 
 		if (data?.confessions?.channel !== body.channel && data?.confessions?.webhook?.id)
 			await this.bot.api.webhooks.delete(data?.confessions.webhook.id);
 
-		const self = await this.getBotInfo();
+		const self = await this.bot.getBotInfo();
 
 		const webhook = await this.bot.api.channels.createWebhook(
 			body.channel,
 			{ name: 'Evelyn · Confessions', avatar: self.avatar },
 		);
 
-		const encryptedToken = this.secureStorage.encrypt(
+		const encryptedToken = this.encryption.encrypt(
 			webhook.token as string,
 		);
 
-		return await this.guilds.updateFeature(guild, {
+		return await this.guilds.update(guild, {
 			confessions: {
 				enabled: true,
 				channel: body.channel,
@@ -159,9 +180,7 @@ export class GuildController {
 
 	@Delete('/features/confessions')
 	async disableCFFeature(@Param('guild') guild: string, @Req() req: FastifyRequest['raw']) {
-		await this.bot.checkPermissions(req.headers.authorization, guild);
-
-		await this.guilds.updateFeature(guild, {
+		await this.guilds.update(guild, {
 			confessions: {
 				enabled: false,
 			},
@@ -172,7 +191,7 @@ export class GuildController {
 
 	@Get('/features/levelling')
 	async getLVLFeature(@Param('guild') guild: string) {
-		const data = await this.guilds.getGuild(guild);
+		const data = await this.guilds.getFeature(guild, 'levels');
 		if (!data) return null;
 
 		return {
@@ -181,14 +200,13 @@ export class GuildController {
 			message: data?.levels?.message,
 			restrictedRoles: data?.levels?.restrictedRoles,
 			restrictedChannels: data?.levels?.restrictedChannels,
+			roleRewards: data?.levels?.roleRewards,
 		};
 	}
 
 	@Post('/features/levelling')
-	async enableLVLFeature(@Req() req: FastifyRequest['raw'], @Param('guild') guild: string) {
-		await this.bot.checkPermissions(req.headers.authorization, guild);
-
-		await this.guilds.updateFeature(guild, {
+	async enableLVLFeature(@Param('guild') guild: string) {
+		await this.guilds.update(guild, {
 			levels: {
 				enabled: true,
 			},
@@ -198,29 +216,22 @@ export class GuildController {
 	}
 
 	@Patch('/features/levelling')
-	async updateLVLFeature(
-		@Req() req: FastifyRequest['raw'],
-		@Param('guild') guild: string,
-		@Body() body: LevelsResponse,
-	) {
-		await this.bot.checkPermissions(req.headers.authorization, guild);
-
-		return await this.guilds.updateFeature(guild, {
+	async updateLVLFeature(@Param('guild') guild: string, @Body() body: LevelsResponse) {
+		return await this.guilds.update(guild, {
 			levels: {
 				enabled: true,
 				channel: body.channel,
 				message: body.message,
 				restrictedRoles: body.restrictedRoles,
 				restrictedChannels: body.restrictedChannels,
+				roleRewards: body.roleRewards,
 			},
 		});
 	}
 
 	@Delete('/features/levelling')
-	async disableLVLFeature(@Param('guild') guild: string, @Req() req: FastifyRequest['raw']) {
-		await this.bot.checkPermissions(req.headers.authorization, guild);
-
-		await this.guilds.updateFeature(guild, {
+	async disableLVLFeature(@Param('guild') guild: string) {
+		await this.guilds.update(guild, {
 			levels: {
 				enabled: false,
 			},
@@ -231,7 +242,7 @@ export class GuildController {
 
 	@Get('/features/logs')
 	async getLogsFeature(@Param('guild') guild: string) {
-		const data = await this.guilds.getGuild(guild);
+		const data = await this.guilds.getFeature(guild, 'logs');
 		if (!data) return null;
 
 		return {
@@ -241,10 +252,8 @@ export class GuildController {
 	}
 
 	@Post('/features/logs')
-	async enableLogsFeature(@Req() req: FastifyRequest['raw'], @Param('guild') guild: string) {
-		await this.bot.checkPermissions(req.headers.authorization, guild);
-
-		await this.guilds.updateFeature(guild, {
+	async enableLogsFeature(@Param('guild') guild: string) {
+		await this.guilds.update(guild, {
 			logs: {
 				enabled: true,
 			},
@@ -254,30 +263,24 @@ export class GuildController {
 	}
 
 	@Patch('/features/logs')
-	async updateLogsFeature(
-		@Req() req: FastifyRequest['raw'],
-		@Param('guild') guild: string,
-		@Body() body: LogsResponse,
-	) {
-		const data = await this.guilds.getGuild(guild);
-
-		await this.bot.checkPermissions(req.headers.authorization, guild);
+	async updateLogsFeature(@Param('guild') guild: string, @Body() body: LogsResponse) {
+		const data = await this.guilds.getFeature(guild, 'logs');
 
 		if (data?.logs?.channel !== body.channel && data?.logs?.webhook?.id)
 			await this.bot.api.webhooks.delete(data?.logs.webhook.id);
 
-		const self = await this.getBotInfo();
+		const self = await this.bot.getBotInfo();
 
 		const webhook = await this.bot.api.channels.createWebhook(
 			body.channel,
 			{ name: 'Evelyn · Logs', avatar: self.avatar },
 		);
 
-		const encryptedToken = this.secureStorage.encrypt(
+		const encryptedToken = this.encryption.encrypt(
 			webhook.token as string,
 		);
 
-		return await this.guilds.updateFeature(guild, {
+		return await this.guilds.update(guild, {
 			logs: {
 				enabled: true,
 				channel: body.channel,
@@ -291,10 +294,8 @@ export class GuildController {
 	}
 
 	@Delete('/features/logs')
-	async disableLogsFeature(@Param('guild') guild: string, @Req() req: FastifyRequest['raw']) {
-		await this.bot.checkPermissions(req.headers.authorization, guild);
-
-		await this.guilds.updateFeature(guild, {
+	async disableLogsFeature(@Param('guild') guild: string) {
+		await this.guilds.update(guild, {
 			logs: {
 				enabled: false,
 			},
@@ -305,7 +306,7 @@ export class GuildController {
 
 	@Get('/features/goodbye')
 	async getGBFeature(@Param('guild') guild: string) {
-		const data = await this.guilds.getGuild(guild);
+		const data = await this.guilds.getFeature(guild, 'goodbye');
 		if (!data) return null;
 
 		return {
@@ -316,10 +317,8 @@ export class GuildController {
 	}
 
 	@Post('/features/goodbye')
-	async enableGBFeature(@Req() req: FastifyRequest['raw'], @Param('guild') guild: string) {
-		await this.bot.checkPermissions(req.headers.authorization, guild);
-
-		await this.guilds.updateFeature(guild, {
+	async enableGBFeature(@Param('guild') guild: string) {
+		await this.guilds.update(guild, {
 			goodbye: {
 				enabled: true,
 			},
@@ -330,13 +329,10 @@ export class GuildController {
 
 	@Patch('/features/goodbye')
 	async updateGDFeature(
-		@Req() req: FastifyRequest['raw'],
 		@Param('guild') guild: string,
 		@Body() body: GoodbyeResponse,
 	) {
-		await this.bot.checkPermissions(req.headers.authorization, guild);
-
-		return await this.guilds.updateFeature(guild, {
+		return await this.guilds.update(guild, {
 			goodbye: {
 				enabled: true,
 				channel: body.channel,
@@ -346,66 +342,9 @@ export class GuildController {
 	}
 
 	@Delete('/features/goodbye')
-	async disableGBFeature(@Param('guild') guild: string, @Req() req: FastifyRequest['raw']) {
-		await this.bot.checkPermissions(req.headers.authorization, guild);
-
-		await this.guilds.updateFeature(guild, {
+	async disableGBFeature(@Param('guild') guild: string) {
+		await this.guilds.update(guild, {
 			goodbye: {
-				enabled: false,
-			},
-		});
-
-		return 'Success';
-	}
-
-	@Get('/features/starboard')
-	async getSBFeature(@Param('guild') guild: string) {
-		const data = await this.guilds.getGuild(guild);
-		if (!data) return null;
-
-		return {
-			enabled: data?.starboard?.enabled,
-			channel: data?.starboard?.starboardChannel,
-			starsRequirement: data?.starboard?.starsRequirement,
-		};
-	}
-
-	@Post('/features/starboard')
-	async enableSBFeature(@Req() req: FastifyRequest['raw'], @Param('guild') guild: string) {
-		await this.bot.checkPermissions(req.headers.authorization, guild);
-
-		await this.guilds.updateFeature(guild, {
-			starboard: {
-				enabled: true,
-			},
-		});
-
-		return 'Success';
-	}
-
-	@Patch('/features/starboard')
-	async updateSBFeature(
-		@Req() req: FastifyRequest['raw'],
-		@Param('guild') guild: string,
-		@Body() body: StarboardResponse,
-	) {
-		await this.bot.checkPermissions(req.headers.authorization, guild);
-
-		return await this.guilds.updateFeature(guild, {
-			starboard: {
-				enabled: true,
-				starboardChannel: body.channel,
-				starsRequirement: body.starsRequirement,
-			},
-		});
-	}
-
-	@Delete('/features/starboard')
-	async disableSBFeature(@Param('guild') guild: string, @Req() req: FastifyRequest['raw']) {
-		await this.bot.checkPermissions(req.headers.authorization, guild);
-
-		await this.guilds.updateFeature(guild, {
-			starboard: {
 				enabled: false,
 			},
 		});
@@ -415,7 +354,7 @@ export class GuildController {
 
 	@Get('/features/tickets')
 	async getTicketsFeature(@Param('guild') guild: string) {
-		const data = await this.guilds.getGuild(guild);
+		const data = await this.guilds.getFeature(guild, 'tickets');
 		if (!data) return null;
 
 		return {
@@ -427,10 +366,8 @@ export class GuildController {
 	}
 
 	@Post('/features/tickets')
-	async enableTicketsFeature(@Req() req: FastifyRequest['raw'], @Param('guild') guild: string) {
-		await this.bot.checkPermissions(req.headers.authorization, guild);
-
-		await this.guilds.updateFeature(guild, {
+	async enableTicketsFeature(@Param('guild') guild: string) {
+		await this.guilds.update(guild, {
 			tickets: {
 				enabled: true,
 			},
@@ -441,13 +378,10 @@ export class GuildController {
 
 	@Patch('/features/tickets')
 	async updateTicketsFeature(
-		@Req() req: FastifyRequest['raw'],
 		@Param('guild') guild: string,
 		@Body() body: TicketsResponse,
 	) {
-		await this.bot.checkPermissions(req.headers.authorization, guild);
-
-		return await this.guilds.updateFeature(guild, {
+		return await this.guilds.update(guild, {
 			tickets: {
 				enabled: true,
 				embed: body.embed,
@@ -458,64 +392,9 @@ export class GuildController {
 	}
 
 	@Delete('/features/tickets')
-	async disableTicketsFeature(@Param('guild') guild: string, @Req() req: FastifyRequest['raw']) {
-		await this.bot.checkPermissions(req.headers.authorization, guild);
-
-		await this.guilds.updateFeature(guild, {
+	async disableTicketsFeature(@Param('guild') guild: string) {
+		await this.guilds.update(guild, {
 			tickets: {
-				enabled: false,
-			},
-		});
-
-		return 'Success';
-	}
-
-	@Get('/features/verification')
-	async getVFFeature(@Param('guild') guild: string) {
-		const data = await this.guilds.getGuild(guild);
-		if (!data) return null;
-
-		return {
-			enabled: data?.verification?.enabled,
-			role: data?.verification?.role,
-		};
-	}
-
-	@Post('/features/verification')
-	async enableVFFeature(@Req() req: FastifyRequest['raw'], @Param('guild') guild: string) {
-		await this.bot.checkPermissions(req.headers.authorization, guild);
-
-		await this.guilds.updateFeature(guild, {
-			verification: {
-				enabled: true,
-			},
-		});
-
-		return 'Success';
-	}
-
-	@Patch('/features/verification')
-	async updateVFFeature(
-		@Req() req: FastifyRequest['raw'],
-		@Param('guild') guild: string,
-		@Body() body: VerifyResponse,
-	) {
-		await this.bot.checkPermissions(req.headers.authorization, guild);
-
-		return await this.guilds.updateFeature(guild, {
-			verification: {
-				enabled: true,
-				role: body.role,
-			},
-		});
-	}
-
-	@Delete('/features/verification')
-	async disableVFFeature(@Param('guild') guild: string, @Req() req: FastifyRequest['raw']) {
-		await this.bot.checkPermissions(req.headers.authorization, guild);
-
-		await this.guilds.updateFeature(guild, {
-			verification: {
 				enabled: false,
 			},
 		});
@@ -525,7 +404,7 @@ export class GuildController {
 
 	@Get('/features/welcome')
 	async getWLFeature(@Param('guild') guild: string) {
-		const data = await this.guilds.getGuild(guild);
+		const data = await this.guilds.getFeature(guild, 'welcome');
 		if (!data) return null;
 
 		return {
@@ -536,10 +415,8 @@ export class GuildController {
 	}
 
 	@Post('/features/welcome')
-	async enableWLFeature(@Req() req: FastifyRequest['raw'], @Param('guild') guild: string) {
-		await this.bot.checkPermissions(req.headers.authorization, guild);
-
-		await this.guilds.updateFeature(guild, {
+	async enableWLFeature(@Param('guild') guild: string) {
+		await this.guilds.update(guild, {
 			welcome: {
 				enabled: true,
 			},
@@ -549,14 +426,8 @@ export class GuildController {
 	}
 
 	@Patch('/features/welcome')
-	async updateWLFeature(
-		@Req() req: FastifyRequest['raw'],
-		@Param('guild') guild: string,
-		@Body() body: WelcomeResponse,
-	) {
-		await this.bot.checkPermissions(req.headers.authorization, guild);
-
-		return await this.guilds.updateFeature(guild, {
+	async updateWLFeature(@Param('guild') guild: string, @Body() body: WelcomeResponse) {
+		return await this.guilds.update(guild, {
 			welcome: {
 				enabled: true,
 				channel: body.channel,
@@ -566,10 +437,8 @@ export class GuildController {
 	}
 
 	@Delete('/features/welcome')
-	async disableWLFeature(@Param('guild') guild: string, @Req() req: FastifyRequest['raw']) {
-		await this.bot.checkPermissions(req.headers.authorization, guild);
-
-		await this.guilds.updateFeature(guild, {
+	async disableWLFeature(@Param('guild') guild: string) {
+		await this.guilds.update(guild, {
 			welcome: {
 				enabled: false,
 			},
@@ -592,10 +461,6 @@ export class GuildController {
 		if (!roles) return null;
 
 		return roles;
-	}
-
-	async getBotInfo() {
-		return await this.bot.api.users.get(process.env.CLIENT_ID as string);
 	}
 }
 
@@ -633,7 +498,7 @@ interface TicketsResponse extends BaseResponse {
 
 interface StarboardResponse extends BaseResponse {
   channel: string;
-  starsRequirement: number;
+  starsRequirement: string;
 }
 
 interface LevelsResponse extends BaseResponse {
@@ -641,4 +506,8 @@ interface LevelsResponse extends BaseResponse {
   message: string;
   restrictedRoles: string[];
   restrictedChannels: string[];
+  roleRewards: {
+	level: number;
+	roleId: string;
+  }[];
 }
