@@ -1,5 +1,5 @@
 {
-  "name": "@shadowworks/nightflyer",
+  "name": "@spearhead/nightflyer",
   "private": true,
   "workspaces": [
     "apps/*"
