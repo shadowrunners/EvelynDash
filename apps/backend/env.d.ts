@@ -17,7 +17,7 @@ declare global {
        */
       WEB_URL?: string;
 
-      PORT?: string;
+      PORT?: number;
     }
   }
 }
