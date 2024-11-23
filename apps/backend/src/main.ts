@@ -21,7 +21,10 @@ async function bootstrap() {
 	// eslint-disable-next-line @typescript-eslint/no-var-requires
 	await app.register(require('@fastify/helmet'));
 
-	await app.listen(process.env.PORT ?? 8080, '0.0.0.0');
+	await app.listen({
+		port: process.env.PORT || 8080,
+		host: '0.0.0.0',
+	})
 }
 
 bootstrap();
