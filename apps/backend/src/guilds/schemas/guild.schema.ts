@@ -1,8 +1,43 @@
-import { Guild } from '../interfaces/guild.interface';
 import { Schema } from 'mongoose';
 
-export const GuildSchema = new Schema<Guild>({
-	guildId: String,
+export const GuildSchema = new Schema({
+	guildId: { type: String },
+	automod: {
+		enabled: { type: Boolean },
+		mentionSpam: {
+			enabled: { type: Boolean },
+			ruleId: { type: String },
+		},
+		profanity: {
+			enabled: { type: Boolean },
+			ruleId: { type: String },
+		},
+		sexualContent: {
+			enabled: { type: Boolean },
+			ruleId: { type: String },
+		},
+		spam: {
+			enabled: { type: Boolean },
+			ruleId: { type: String },
+		},
+		customKeyWord: {
+			enabled: { type: Boolean },
+			ruleId: { type: String },
+			keyword: { type: String },
+		},
+		zalgo: {
+			enabled: { type: Boolean },
+			ruleId: { type: String },
+		},
+		emojiSpam: {
+			enabled: { type: Boolean },
+			ruleId: { type: String },
+		},
+		inviteLinks: {
+			enabled: { type: Boolean },
+			ruleId: { type: String },
+		},
+	},
 	logs: {
 		enabled: Boolean,
 		channel: String,
@@ -38,6 +73,12 @@ export const GuildSchema = new Schema<Guild>({
 		message: String,
 		restrictedRoles: [String],
 		restrictedChannels: [String],
+		roleRewards: [
+			{
+				level: Number,
+				roleId: String,
+			},
+		],
 	},
 	confessions: {
 		enabled: Boolean,
