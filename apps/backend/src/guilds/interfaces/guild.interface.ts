@@ -4,6 +4,51 @@ export interface Guild extends Document {
 	/** The ID of the server. */
 	guildId: string;
 
+	automod: {
+		alertsChannel: string;
+
+		mentionspam: {
+			enabled: boolean
+			ruleId: string,
+		},
+		profanity: {
+			enabled: boolean;
+			ruleId: string;
+		},
+		/** The Anti NSFW Invite Links submodule's config. */
+		nsfwinvitelinks: {
+			/** Indicates if the NSFW invite links submodule is enabled or not. */
+			enabled: boolean;
+			/** The ID of the rule. */
+			ruleId: string;
+		},
+		sexualcontent: {
+			enabled: boolean;
+			ruleId: string;
+		},
+		invitelinks: {
+			enabled: boolean;
+			ruleId: string;
+		},
+		spam: {
+			enabled: boolean;
+			ruleId: string;
+		},
+		zalgo: {
+			enabled: boolean;
+			ruleId: string;
+		},
+		emojispam: {
+			enabled: boolean;
+			ruleId: string;
+		},
+		customkeyword: {
+			enabled: boolean;
+			ruleId: string;
+			keyword: string;
+		},
+	}
+
 	logs: {
 		/** Indicates if the logging system is enabled or not. */
 		enabled: boolean;
@@ -62,6 +107,11 @@ export interface Guild extends Document {
 		restrictedRoles: string[];
 		/** The channels that users can't gain any XP in. */
 		restrictedChannels: string[];
+		/** The roles and levels at which they will be rewarded. */
+		roleRewards: {
+			level: number;
+			roleId: string;
+		}[];
 	};
 	confessions: {
 		/** Indicates if the confessions system is enabled or not. */
