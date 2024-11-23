@@ -14,17 +14,30 @@ export class GuildsService {
 	// eslint-disable-next-line no-empty-function
 	) {}
 
-	async getGuild(guild: string) {
-		return await this.guilds.findOne({
-			guildId: guild,
-		}).lean();
+	/** Gets the full information regarding the guild's config from the DB. */
+	public async get(guild: string) {
+		return await this.guilds.findOne({ guildId: guild });
 	}
 
-	async updateFeature(guild: string, data: object) {
+	/** Gets the full information regarding a guild's specific feature. */
+	public async getFeature(guildId: string, feature: Features) {
+		return await this.guilds.findOne({ guildId }).select(feature);
+	}
+
+	public async update(guild: string, data: object) {
 		return await this.guilds.updateOne(
-			{ guildId: guild },
-			{ $set: data },
+			{ guildId: guild }, { $set: data }, { upsert: true },
 		).lean();
 	}
 }
+
+export type Features = 
+	'automod' |
+	'antiphishing' |
+    'confessions' |
+	'goodbye' |
+	'levels' |
+    'logs' |
+	'tickets' |
+	'welcome';
 
