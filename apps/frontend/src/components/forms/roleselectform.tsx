@@ -9,7 +9,6 @@ import type {
 import {
 	Form,
 	FormField,
-	FormControl,
 	FormItem,
 	SelectMenu,
 	Spacer,
@@ -21,53 +20,67 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@UI';
-import { useGuildRolesQuery } from '@Hooks';
+import { useGuildRolesQuery, useGuildId } from '@/hooks';
 import { useForm } from 'react-hook-form';
-import { useGuildId } from '@Utils';
 import { useMemo } from 'react';
 
-export const RoleSelectForm: ControlledInput<Omit<SelectMenuProps, 'value' | 'onChange'>> = ({
-	control,
-	controller,
-	...props
+export const RoleSelect = ({
+	value, onChange, ...rest
+}: {
+	value: string;
+	onChange: (channel: string) => void;
 }) => {
-	const form = useForm();
 	const guild = useGuildId();
 	const { data, isLoading } = useGuildRolesQuery(guild);
 
 	const selected = useMemo(() => {
-		return props.defaultValue ? data?.find((r) => r.id === props.defaultValue?.toString()) : null;
-	}, [props.defaultValue, data]);
+		return value ? data?.find((r) => r.id === value.toString()) : null;
+	}, [value, data]);
+
+	return (
+		<Select value={value} onValueChange={onChange} disabled={isLoading} {...rest}>
+			<SelectTrigger>
+				<SelectValue placeholder='placeholder' defaultValue={selected?.id} key={selected?.id} />
+			</SelectTrigger>
+			<SelectContent className='bg-secondary text-white'>
+				<SelectGroup className='font-poppins m-2'>
+					<SelectLabel>Roles</SelectLabel>
+					{data?.map((role) => (
+						<SelectItem className='font-poppins' value={role.id.toString()} key={role.id.toString()}>{role.name}</SelectItem>
+					))}
+				</SelectGroup>
+			</SelectContent>
+		</Select>
+	);
+};
+
+export const RoleSelectForm: ControlledInput<Omit<SelectMenuProps, 'value' | 'onChange'>> = ({
+	control,
+	controller,
+	showHeader,
+	...props
+}) => {
+	const form = useForm();
 
 	return (
 		<div className='grid gap-3'>
-			<div className="flex flex-col width-[100%] relative border-r-3xl p-5 shadow black2 rounded-3xl">
-				<label className="block text-start mr-3 transition-all duration-300 opacity-100 text-base font-medium mb-0">
-					<h2 className="text-2xl font-semibold">{control.label}</h2>
-					<p className="text-gray-500 mb-3">{control.description}</p>
-				</label>
-				<Spacer />
+			<div className={`flex flex-col width-[100%] relative border-r-3xl ${showHeader ? 'shadow bg-secondary p-5' : ''} rounded-3xl`}>
+				{showHeader ? (
+					<section>
+						<label className="block text-start mr-3 transition-all duration-300 opacity-100 text-base font-medium mb-0">
+							<h2 className="text-2xl font-semibold">{control.label}</h2>
+							<p className="text-gray-500 mb-3">{control.description}</p>
+						</label>
+						<Spacer />
+					</section>
+				) : <></>}
 				<Form {...form}>
 					<FormField
 						control={controller.control}
 						name={controller.name}
 						render={({ field }) => (
 							<FormItem className='text-white'>
-								<Select value={field.value} onValueChange={field.onChange} disabled={isLoading}>
-									<FormControl>
-										<SelectTrigger>
-											<SelectValue placeholder='placeholder' defaultValue={selected?.id} key={selected?.id} />
-										</SelectTrigger>
-									</FormControl>
-									<SelectContent className='black2 text-white'>
-										<SelectGroup className='font-poppins m-2'>
-											<SelectLabel>Roles</SelectLabel>
-											{data?.map((role) => (
-												<SelectItem className='font-poppins' value={role.id.toString()} key={role.id.toString()}>{role.name}</SelectItem>
-											))}
-										</SelectGroup>
-									</SelectContent>
-								</Select>
+								<RoleSelect {...field} {...props} />
 							</FormItem>
 						)}
 					/>
@@ -119,7 +132,7 @@ export const MultiRoleSelectForm: ControlledInput<Omit<SelectMenuProps, 'value' 
 
 	return (
 		<div className='grid gap-3'>
-			<div className="flex flex-col width-[100%] relative border-r-3xl p-5 shadow black2 rounded-3xl">
+			<div className="flex flex-col width-[100%] relative border-r-3xl p-5 shadow bg-secondary rounded-3xl">
 				<label className="block text-start mr-3 transition-all duration-300 opacity-100 text-base font-medium mb-0">
 					<h2 className="text-2xl font-semibold">{control.label}</h2>
 					<p className="text-gray-500 mb-3">{control.description}</p>
