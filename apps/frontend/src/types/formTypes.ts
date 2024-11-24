@@ -1,7 +1,7 @@
 import type { FieldValues, Path, UseControllerProps, FieldPathByValue } from 'react-hook-form';
 import type { ReactElement, ReactNode } from 'react';
 import { Props as SelectProps } from 'react-select';
-import type { Override } from '@/types/types';
+import type { Override } from '@/types';
 
 export type FormProps = {
     required?: boolean;
@@ -35,6 +35,7 @@ type ControlledInputProps<
     {
         control: Omit<FormProps, 'error' | 'children'>;
         controller: UseControllerProps<TFieldValue, TName>;
+        showHeader?: boolean;
     }
 >;
 
@@ -42,7 +43,7 @@ export type ControlledInput<Props, V = unknown> = <
     TFieldValues extends FieldValues,
     TName extends FieldPathByValue<TFieldValues, V>
 >(
-    props: ControlledInputProps<Props, TFieldValues, TName>
+    props: ControlledInputProps<Props, TFieldValues, TName>,
 ) => ReactElement;
 
 export type SelectMenuProps = Override<
@@ -50,6 +51,7 @@ export type SelectMenuProps = Override<
   {
     value?: string;
     onChange: (v: string | string[]) => void;
+    showHeader?: boolean;
   }
 >;
 
