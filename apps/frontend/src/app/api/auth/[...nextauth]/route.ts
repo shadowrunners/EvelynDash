@@ -4,7 +4,7 @@ import NextAuth from 'next-auth';
 const handler = NextAuth({
 	providers: [
 		DiscordProvider({
-			clientId: process.env.CLIENT_ID,
+			clientId: process.env.NEXT_PUBLIC_CLIENT_ID,
 			clientSecret: process.env.CLIENT_SECRET,
 			authorization: 'https://discord.com/api/oauth2/authorize?scope=identify',
 		}),
@@ -25,7 +25,6 @@ const handler = NextAuth({
 
 			return session;
 		},
-		// TODO: Redirect user to /pickaguild after authentication
 	},
 	pages: {
 		signOut: '/',
