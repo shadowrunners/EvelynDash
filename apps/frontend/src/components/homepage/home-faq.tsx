@@ -1,6 +1,6 @@
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../ui/accordion";
 
-export default function FAQ() {
+export function FAQ() {
     return (
         <section id="faq">
             <div>
