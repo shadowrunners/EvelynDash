@@ -1,5 +1,6 @@
 'use client';
 
+import { StarboardFeature } from '@/types/features';
 import { ChannelSelectForm, NumericTextForm } from '@Forms';
 import { zodResolver } from '@hookform/resolvers/zod';
 import type { UseFormRender } from '@Types';
@@ -9,7 +10,7 @@ import * as z from 'zod';
 const schema = z.object({
 	channel: z.string(),
 	starsRequirement:
-		z.string()
+		z.number()
 			.min(1, {
 				message: 'Stars requirement cannot be less than 1.',
 			})
@@ -17,16 +18,16 @@ const schema = z.object({
 				message: 'Stars requirement cannot be higher than 100.',
 			}),
 });
-type StarboardFeature = z.infer<typeof schema>;
+type FeatureSchema = z.infer<typeof schema>;
 
 export const useStarboardSystem: UseFormRender<StarboardFeature> = (data, onSubmit) => {
-	const { reset, handleSubmit, formState, control } = useForm<StarboardFeature>({
+	const { reset, handleSubmit, formState, control } = useForm<FeatureSchema>({
+		resolver: zodResolver(schema),
 		shouldUnregister: false,
 		defaultValues: {
 			channel: data.channel,
 			starsRequirement: data.starsRequirement,
 		},
-		resolver: zodResolver(schema),
 	});
 
 	return {
@@ -45,6 +46,7 @@ export const useStarboardSystem: UseFormRender<StarboardFeature> = (data, onSubm
 						description: 'The amount of star reactions required to send the message to the starboard channel.',
 					}}
 					controller={{ control, name: 'starsRequirement' }}
+					showHeader={true}
 				/>
 			</div>
 		),
@@ -56,7 +58,7 @@ export const useStarboardSystem: UseFormRender<StarboardFeature> = (data, onSubm
 				}),
 			);
 
-			reset(data);
+			reset(e);
 		}),
 		canSave: formState.isDirty,
 		reset: () => reset(control._defaultValues),
