@@ -1,3 +1,5 @@
+import type { APIUser } from 'discord-api-types/v10';
+
 import type { CustomFeatures } from '@/types/features';
 import type { SPAPIGuild, SPAPIPartialGuild } from '@/types';
 import { QueryClient, useMutation, useQuery } from '@tanstack/react-query';
@@ -81,14 +83,14 @@ export function useGuilds() {
 export function useUser() {
 	const { session, status } = useAccessToken();
 	
-	return useQuery<DAPIUser>({
+	return useQuery<APIUser>({
 		queryFn: async () => {
 			return await useAPI({
 				apiType: 'discordAPI',
 				endpoint: '/users/@me',
 				method: 'GET',
 				session,
-			}) as DAPIUser;
+			}) as APIUser;
 		},
 		queryKey: ['user_me'],
 		enabled: status === 'authenticated',
