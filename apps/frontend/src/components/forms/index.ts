@@ -1,8 +1,8 @@
-import { ChannelSelectForm, MultiChannelSelectForm } from './ChannelSelect';
+import { ChannelSelectForm, MultiChannelSelectForm } from './channelselectform';
 import { SmallColorPickerForm } from './ColorPicker';
 import { Embed } from './Embed';
-import { RoleSelectForm, MultiRoleSelectForm } from './RoleSelect';
-import { TextAreaForm } from './TextArea';
+import { RoleSelectForm, MultiRoleSelectForm } from './roleselectform';
+import { TextForm } from './textform';
 
 export {
 	ChannelSelectForm,
@@ -11,5 +11,5 @@ export {
 	Embed,
 	RoleSelectForm,
 	MultiRoleSelectForm,
-	TextAreaForm,
+	TextForm,
 };
