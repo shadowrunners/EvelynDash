@@ -4,7 +4,7 @@ import { Card, CardHeader, CardFooter, CardContent, Button } from "./";
 import { useEffect, useState } from "react";
 import { MdCookie } from "react-icons/md";
 
-export default function CookieConsent() {
+export function CookieConsent() {
   // a dev is probably gonna look at this and say it's absolutely ass
   // but hey, what works, works
   const [hasConsented, setConsent] = useState(false);
