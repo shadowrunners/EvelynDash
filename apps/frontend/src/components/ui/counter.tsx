@@ -1,35 +1,68 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Button } from './button';
+import { Input } from './input';
 
-const CounterComponent = ({ value }: { value: number | undefined }) => {
+// this is the most duct taped component I've ever written
+// but if it works, it works 🤷‍♂️
+const CounterComponent: React.FC<{ value?: number, onChange: (val: number) => void }> = ({ value, onChange }) => {
 	const [count, setCount] = useState(value !== undefined ? value : 0);
 
-	useEffect(() => {
-		if (value !== undefined) {
-			setCount(value);
-		}
-	}, [value]);
-
-	const decreaseCounter = () => {
-		setCount((prevCount) => (prevCount > 0 ? prevCount - 1 : 0));
-	};
+	console.log(value);
 
 	const increaseCounter = () => {
-		setCount((prevCount) => prevCount + 1);
+		if (count < 100) {
+			setCount((prevCount) => {
+				const newVal = prevCount + 1;
+				onChange(newVal);
+				setCount(newVal);
+				return newVal;
+			});
+		}
+	};
+
+	const decreaseCounter = () => {
+		if (count > 0) {
+			setCount((prevCount) => {
+				const newVal = prevCount - 1;
+				onChange(newVal);
+				setCount(newVal);
+				return newVal;
+			});
+		}
+	};
+
+	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const val = parseInt(e.target.value);
+		if (val > 100) e.target.value = '100';
+
+		setCount(val);
+		onChange(count);
 	};
 
 	return (
-		<div className='flex items-center justify-center border-4 border-gray-900 rounded-2xl mt-2'>
-			<Button className='mr-[15px] bg-gray-900' onClick={decreaseCounter}>
-				{'<'}
+		<div
+			className='flex items-center justify-between p-2 border rounded-2xl mt-2 w-[150px]'
+		>
+			<Button className='bg-gray-900' onClick={decreaseCounter}>
+				-
 			</Button>
-			<div className='font-[25px] w-auto'>{count}</div>
-			<Button className='ml-[15px] bg-gray-900' onClick={increaseCounter}>
-				{'>'}
+			<Input
+				type='number'
+				className='w-[90%] bg-transparent text-center outline-none border-none'
+				value={count}
+				onKeyDown={(event) => {
+					if (!(event.key === 'Backspace' || /[0-9]/.test(event.key))) {
+						event.preventDefault();
+					}
+				}}
+				maxLength={3}
+				onChange={(e) => handleChange(e)}
+			/>
+			<Button className='bg-gray-900' onClick={increaseCounter}>
+				+
 			</Button>
 		</div>
 	);
 };
-
 
 export default CounterComponent;
