@@ -1,14 +1,12 @@
-import { withAuth } from 'next-auth/middleware';
 import createIntlMiddleware from 'next-intl/middleware';
+import { withAuth } from 'next-auth/middleware';
 import { NextRequest } from 'next/server';
+import { routing } from './i18n/routing';
 
 const locales = ['en'];
-const publicPages = ['/', '/privacy', '/tos'];
+const publicPages = ['/', '/privacy', '/tos', '/commands', '/auth/signin'];
 
-const intlMiddleware = createIntlMiddleware({
-	locales,
-	defaultLocale: 'en',
-});
+const intlMiddleware = createIntlMiddleware(routing);
 
 const authMiddleware = withAuth(
 	// Note that this callback is only invoked if
@@ -22,7 +20,7 @@ const authMiddleware = withAuth(
 			authorized: ({ token }) => token != null,
 		},
 		pages: {
-			signIn: '/',
+			signIn: '/auth/signin',
 			signOut: '/',
 		},
 	},
@@ -45,4 +43,4 @@ export default function middleware(req: NextRequest) {
 		return (authMiddleware as any)(req);
 	}
 }
-export const config = { matcher: ['/guilds/:path*', '/dash/:path*', '/api/guilds/:path*', '/((?!api|_next|.*\\\\..*).*)'] };
+export const config = { matcher: [ '/', `/(de|en)/:path`, '/guilds/:path*', '/pickaguild/:path*', '/((?!api|images|_next|.*\\\\..*).*)'] };
