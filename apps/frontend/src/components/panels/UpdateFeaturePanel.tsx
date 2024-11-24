@@ -1,6 +1,6 @@
 'use client';
 
-import { useEnableFeatureMutation, useUpdateFeatureMutation } from '@/utils/API/hooks';
+import { useEnableFeatureMutation, useUpdateFeatureMutation } from '@/hooks';
 import type { FeatureConfig, CustomFeatures } from '@/types/features';
 import { RiErrorWarningFill as WarningIcon } from 'react-icons/ri';
 import type { UseFormRenderResult } from '@/types/formTypes';
@@ -8,6 +8,7 @@ import { Button, Spacer } from '@/components/ui';
 import { useTranslations } from 'next-intl';
 import { IoSave } from 'react-icons/io5';
 import { motion } from 'framer-motion';
+import { toast } from 'sonner';
 
 export const UpdateFeaturePanel = ({
 	guild,
@@ -35,6 +36,8 @@ export const UpdateFeaturePanel = ({
 		enableMutation.mutate({ enabled: false, guild, feature: featureId });
 	};
 
+	console.log(result)
+
 	return (
 		<div className='flex flex-col gap-5 w-full h-full mt-5 text-white'>
 			<div className='flex flex-col md:flex-row mx-3 sm:mx-5 justify-between'>
@@ -57,11 +60,7 @@ export const UpdateFeaturePanel = ({
 	);
 };
 
-function Savebar({
-	result: { canSave, onSubmit, reset },
-}: {
-  result: UseFormRenderResult;
-}) {
+export function Savebar({ result }: { result: UseFormRenderResult }) {
 	const t = useTranslations();
 	const t2 = useTranslations('dash');
 
@@ -70,13 +69,15 @@ function Savebar({
 		visible: { opacity: 1, y: 0 },
 	};
 
+	console.log(result.canSave);
+
 	return (
 		<motion.div
 			initial='hidden'
-			animate={canSave ? 'visible' : 'hidden'}
+			animate={result.canSave ? 'visible' : 'hidden'}
 			exit='hidden'
 			variants={variants}
-			className='flex black2 rounded-3xl sticky bottom-2 md:bottom-10 w-full p-1 md:p-[15px] shadow-normal items-center flex-col md:flex-row gap-1 md:gap-2 mt-auto'
+			className='flex bg-secondary rounded-3xl sticky bottom-2 md:bottom-10 w-full p-1 md:p-[15px] shadow-normal items-center flex-col md:flex-row gap-1 md:gap-2 mt-auto'
 		>
 			<WarningIcon className='hidden sm:block w-[30px] h-[30px]' />
 			<h1 className="font-semibold text-md md:text-lg">{t('unsaved')}</h1>
@@ -86,12 +87,18 @@ function Savebar({
 					className='rounded-full mr-2'
 					type="submit"
 					variant="default"
-					onClick={onSubmit}
+					onClick={() => {
+						toast('Changes have been saved successfully.');
+						result.onSubmit();
+					}}
 				>
 					<IoSave className='mr-1' />
 					{t2('button.save')}
 				</Button>
-				<Button className='rounded-full' onClick={reset}>
+				<Button className='rounded-full' onClick={() => {
+					toast('Changes have been reset successfully.');
+					result?.reset();
+				}}>
 					{t2('button.discard')}
 				</Button>
 			</div>
