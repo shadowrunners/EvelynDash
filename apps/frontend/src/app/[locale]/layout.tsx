@@ -1,12 +1,10 @@
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
+import { CookieConsent } from '@components/ui';
 import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
-
 import type { ReactNode } from 'react';
 import '@/styles/global.css';
-
-import CookieConsent from '@/components/ui/cookieconsent';
 
 export default async function LocaleLayout({
 	children,
