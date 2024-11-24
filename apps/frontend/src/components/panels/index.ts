@@ -1,6 +1,4 @@
-import { ErrorPanel } from './ErrorPanel';
-import { LoadingPanel } from './LoadingPanel';
-import { QueryStatus } from './QueryPanel';
+import { QueryStatusHelper } from './QueryHelper';
 import { UpdateFeaturePanel } from './UpdateFeaturePanel';
 
-export { ErrorPanel, LoadingPanel, QueryStatus, UpdateFeaturePanel };
+export { QueryStatusHelper, UpdateFeaturePanel };
