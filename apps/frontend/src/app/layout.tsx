@@ -1,4 +1,4 @@
-import { NextAuthProvider, QueryProvider } from '@Providers';
+import { NextAuthProvider, QueryProvider } from '@components/providers';
 import type { ReactNode } from 'react';
 import { Metadata } from 'next';
 import '@/styles/global.css';
@@ -7,7 +7,7 @@ import { GeistSans } from 'geist/font/sans'
 import { GeistMono } from 'geist/font/mono'
 
 export const metadata: Metadata = {
-	title: 'Evelyn | shadowworks.',
+	title: 'Evelyn',
 	description: 'PLACEHOLDER',
 };
 
