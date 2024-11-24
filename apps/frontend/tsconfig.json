@@ -22,14 +22,16 @@
     "paths": {
       "@/*": ["./src/*"],
       "@Types": ["./src/types/index"],
-      "@Hooks": ["./src/utils/API/hooks"],
+      "@Hooks": ["./src/hooks/hooks"],
       "@UI": ["./src/components/ui/index"],
       "@Utils": ["./src/utils/util"],
       "@Features": ["./src/types/features"],
       "@Forms": ["./src/components/forms/index"],
+      "@Providers": ["./src/components/providers"],
       "@public/*": [
         "./public/*"
-      ]
+      ],
+      "@components/*": ["./src/components/*"],
     },
     "plugins": [
       {
@@ -42,7 +44,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts"
-  ],
+, "tailwind.config.js"  ],
   "exclude": [
     "node_modules"
   ]
