@@ -1,0 +1,205 @@
+{
+    "auth": {
+        "card_title": "Login",
+        "card_description": "Welcome back, runner. Use the button below to sign in with your Discord account.",
+        "card_footer_part1": "By signing in, you accept our",
+        "card_footer_link1": "Privacy Policy",
+        "card_footer_link2": "Terms of Service",
+        "oauth_button": "Sign in with Discord"
+    },
+    "home": {
+        "main": {
+            "hero": {
+                "main1": "Unleash the",
+                "main2": "full potential",
+                "main3": "of your server.",
+                "punchline": "An alternative to paid bots, open source and constantly evolving."
+            },
+            "features": "Features"
+        },
+        "nav": {
+            "home": "Home",
+            "commands": "Commands",
+            "faq": "FAQ",
+            "documentation": "Documentation",
+            "btn_notsignedin": "Sign in",
+            "btn_signedin": "Manage Servers"
+        },
+        "footer": {
+            "legal": {
+                "name": "Legal",
+                "privacy": "Privacy Policy",
+                "tos": "Terms of Service"
+            },
+            "support": {
+                "name": "Support",
+                "server": "Support Server"
+            },
+            "links": {
+                "name": "Links",
+                "github": "GitHub",
+                "documentation": "Documentation",
+                "donations": "Support Us"
+            }
+        }
+    },
+    "other": {
+        "404_page": {
+            "header": "404",
+            "description": "You strayed too far into the abyss and couldn't find your way back to the page you were supposed to go to.",
+            "button": "Go back"
+        },
+        "guild_selection": {
+            "header": "Guild Selection",
+            "description": "Select the guild you'd like to configure."
+        }
+    },
+    "main": {
+        "footer_punchline": "Unleash the full potential of your server.",
+        "footer_links": "Links",
+        "footer_link1": "Privacy Policy",
+        "footer_link2": "Terms of Service",
+        "footer_copyright": "© 2023 Shadowrunners, all rights reserved. Made with 💝 by scrappie."
+    },
+    "privacy": {
+        "header": {
+            "title": "Privacy Policy",
+            "description": "This Privacy Policy outlines how we collect, use and protect your information when you use the Evelyn service.",
+            "last_updated": "Last Updated: November 24th, 2024."
+        },
+        "section1": {
+            "header": "1. Data We Collect",
+            "subsection1": {
+                "title": "1.1. Guild Data",
+                "content_1": "- Public information such as your guild's unique ID, channel IDs & role IDs (only for those that are chosen for that / those specific features).",
+                "content_2": "- Message Content: only when explicitly required for specific features (e.g. moderation logs, confessions, tickets, anti-phishing). Message content is never stored unless necessary.",
+                "content_3": "- Webhook Data (IDs & tokens): only when explicitly required for specific features (e.g. mod logs, confessions, anti-phishing). Webhook tokens are automatically encrypted when the webhook is created & saved to the database. Content decryption for these only happens when the bot needs to send a message through it and even then, the decrypted value is only stored in memory for a couple of seconds."
+            },
+            "subsection2": {
+                "title": "1.2. User Data",
+                "content_1": "- Public information such as the user's ID to identify users for bot features such as reminders.",
+                "content_2": "- Message Content: When using the reminders feature, the bot temporarily stores the reminder message content + your user ID in our database. This data is deleted automatically once the reminder is sent to your DMs."
+            },
+            "subsection3": {
+                "title": "1.3. Optional Data",
+                "content_1": "For integration purposes with other platforms, we may also collect optional data such as:",
+                "content_2": "- User Preferences: data such as playlists, preferences, configurations or other data saved explicitly on a per user basis."
+            }
+        },
+        "section2": {
+            "header": "2. How we use your data",
+            "content_1": "We use the data we collect to:",
+            "content_2": "- Provide all bot features.",
+            "content_3": "- Enhance user experience by saving preferences or personalizing features.",
+            "content_4": "- Improve and troubleshoot the bot's functionality.",
+            "content_5": "We do not sell, share or use your data for advertising purposes."
+        },
+        "section3": {
+            "header": "3. Data Retention",
+            "content_1": "We retain data about your server only until the bot is kicked from the server. When the bot is kicked from the server, our automatic data deletion process begins which will scrub your server's data from our Guilds database. We cannot recover your data after this if you decide to start using the Evelyn service again.",
+            "content_2": "However, if a guild or user is found to have violated our Terms of Service, such as engaging in malicious activity or abuse of the bot's services, we reserve the right to permanently retain the offender's user ID and/or the guild's ID. This data will be stored solely to prevent future violations and to ensure the integrity & security of the service.",
+            "content_3": "Data such as message content captured for specific features (e.g. confessions, mod logs) is never stored by us and is instead shared to the designated Discord channel provided by you in our dashboard. If a channel isn't provided, this data will never be shared."
+        },
+        "section4": {
+            "header": "4. Data Sharing & Third-Party Integrations",
+            "content_1": "To provide certain services and ensure the security of our users, we may share limited data with third party services that we trust. This includes:",
+            "content_2": "- Anti-Fish: When the Anti-Phishing module is active, message content will be temporarily shared with the Anti-Fish API to analyze links and detect potential phishing attempts (phishing links that lead to fake sign-in pages). Message content is not stored nor shared by the third-party service and is used solely for phishing link detection purposes. This service adheres to its own privacy policy which you can find here:",
+            "content_2_link": "https://anti-fish.bitflow.dev/",
+            "content_3": "- The Discord API: For interaction with the Discord platform, such as retrieving user or server related data to execute bot commands and provide access to features.",
+            "content_4": "- The Spotify API: Upon linking Evelyn to your Spotify account, we use the API to add songs that you like via Evelyn's music system to your Spotify account's 'Liked Songs' playlist and also retrieve data about your Spotify playlists upon request. This integration operates in accordance with Spotify's API Terms of Service and Privacy Policy. We don't store any Spotify data permanently on our servers unless explicitly required to provide the specified functionality. For more information, please review Spotify's Privacy Policy here:",
+            "content_4_link": "https://www.spotify.com/us/legal/privacy-policy/"
+        },
+        "section5": {
+            "header": "5. Your Rights",
+            "content_1": "Depending on your jurisdiction, you may have the following rights regarding your data:",
+            "content_2": "- Access and Portability: Request a copy of the data we have about you.",
+            "content_3": "- Correction: Request corrections to inaccurate data.",
+            "content_4": "- Deletion: Request the deletion of your personal data.",
+            "content_5": "- Objection: Object to the processing of your data under certain conditions.",
+            "content_6": "To exercise any of these rights, please open a ticket on our Discord server or contact me at: notscrappie[at]proton.me."
+        },
+        "section6": {
+            "header": "6. Children's Privacy",
+            "content_1": "This service is not intended for use by individuals under the age of 13, or the minimum age of digital consent in their jurisdiction, as specified by Discord's guidelines:",
+            "content_1_link": "https://support.discord.com/hc/en-us/articles/360040724612-Why-is-Discord-asking-for-my-birthday",
+            "content_2": "We do not knowingly collect, store or retain personal information from users under this age limit. If we become aware that data has been inadvertently collected from a user under the minimum age, we will take immediate steps to delete that data from our records.",
+            "content_3": "If you are a parent or guardian and believe that your child has provided personal information to our service without your consent, please contact me by filing a ticket on our Discord server or contacting me via email at notscrappie[at]proton.me. An investigation & removal of any relevant data will be done."
+        },
+        "agreement": "By using or interacting with Evelyn, you agree to the terms outlined in this policy. If you have any questions or concerns about this Privacy Policy or your data, you can reach us at our Discord server or via email at notscrappie[at]proton.me.",
+        "update_notice": "We may update this Privacy Policy to reflect changes in our services or legal obligations. Updates will be posted here with a revised 'Last Updated' date and on our Discord server."
+    },
+    "dash": {
+        "servers": {
+            "title": "Welcome back",
+            "description": "Select a server to manage your Evelyn experience."
+        },
+        "button": {
+            "enablefeature": "Enable",
+            "disablefeature": "Disable",
+            "configfeature": "Configure",
+            "invite": "Invite Evelyn",
+            "save": "Save",
+            "discard": "Discard",
+            "tryagain": "Try Again"
+        },
+        "features": {
+            "name": "Features",
+            "automod": {
+                "title": "AutoMod",
+                "description": "Protect your sever against malicious actors using AI powered auto moderation."
+            },
+            "antiphishing": {
+                "title": "Anti-Phishing",
+                "description": "Protects your server against fraudulent links that steal users information."
+            },
+            "confessions": {
+                "title": "Confessions",
+                "description": "Sends an anonymous message to a designated channel."
+            },
+            "goodbye": {
+                "title": "Goodbye",
+                "description": "Sends a custom message when a user leaves the server."
+            },
+            "logs": {
+                "title": "Logs",
+                "description": "Logs every single mod(s) action / server change to a designated channel."
+            },
+            "levelling": {
+                "title": "Levelling",
+                "description": "Makes chatting more rewarding by introducing an XP system."
+            },
+            "starboard": {
+                "title": "Starboard",
+                "description": "Highlight and archive the best messages sent on your server."
+            },
+            "tickets": {
+                "title": "Tickets",
+                "description": "Makes your moderation team's job of helping server members easier."
+            },
+            "verification": {
+                "title": "Verification",
+                "description": "Blocks bots and raiders by making them complete a captcha before entering."
+            },
+            "welcome": {
+                "title": "Welcome",
+                "description": "Sends a custom message when a user joins the server."
+            }
+        },
+        "banner": {
+            "title": "Welcome back, runner.",
+            "description": "What would you like to configure?"
+        }
+    },
+    "breadcrumbs": {
+        "home": "Pages"
+    },
+    "error": {
+        "load": "Failed to load this cyberspace. Perhaps the backend has gone haywire?",
+        "not_found": "System Failure",
+        "not_found_desc": "Uh oh, Evelyn couldn't access this cyberspace as she isn't a member of it.",
+        "not_enabled": "This feature is not enabled",
+        "not_enabled_desc": "Enable this feature in order to customize its aspects."
+    },
+    "loading": "Loading",
+    "unsaved": "Save Changes?"
+}
