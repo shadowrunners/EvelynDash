@@ -2,7 +2,8 @@
 
 
 import Select, { Props } from 'react-select';
-import { cn } from '@Utils';
+import { cn } from '@/utils';
+import { forwardRef } from 'react';
 
 const multiValueStyles =
     'mt-0.5 ml-1 mb-0.5 bg-background border border-gray-800 rounded items-center py-0.5 pl-2 pr-1 gap-1.5 bg-transparent';
@@ -21,20 +22,11 @@ interface SelectComponentProps extends Props {
     placeholder?: string;
 }
 
-// TODO: Replace with FC
-
-export const SelectMenu = (
-	({
-		options,
-		value,
-		onChange,
-		isDisabled,
-		isLoading,
-		placeholder,
-		...props
-	}: SelectComponentProps) => {
+export const SelectMenu = forwardRef<never, SelectComponentProps>(
+	({ options, value, onChange, isDisabled, isLoading, placeholder, ...props }, ref) => {
 		return (
 			<Select
+				ref={ref}
 				unstyled={true}
 				isSearchable={true}
 				value={value}
@@ -81,4 +73,5 @@ export const SelectMenu = (
 				{...props}
 			/>
 		);
-	});
+	},
+);
