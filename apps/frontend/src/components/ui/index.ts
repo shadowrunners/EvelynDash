@@ -1,16 +1,16 @@
 import { Avatar, AvatarImage, AvatarFallback } from './avatar';
 import { Button } from './button';
 import { Card, CardFooter, CardContent, CardTitle, CardHeader, CardDescription } from './card';
+import { CookieConsent } from './cookieconsent';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuItem, DropdownMenuSeparator } from './dropdown-menu';
 import { Form, FormDescription, FormMessage, FormField, FormItem, FormLabel, FormControl } from './form';
 import { Input } from './input';
-import { GuildSelect } from './guildselect';
 import { Label } from './label';
 import { Popover, PopoverContent, PopoverTrigger } from './popover';
-import { Profile } from './profile';
+import { Switch } from './switch';
 import { SelectMenu } from './selectmenu';
 import { ScrollArea } from './scroll-area';
-import { Sidebar, MobileSidebar } from './sidebar';
+import { Sidebar } from './sidebar';
 import { Separator } from './separator';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectSeparator, SelectTrigger, SelectValue } from './select';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetFooter, SheetTrigger } from './sheet';
@@ -29,6 +29,7 @@ export {
 	CardTitle,
 	CardContent,
 	CardDescription,
+	CookieConsent,
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
@@ -43,17 +44,15 @@ export {
 	FormLabel,
 	FormMessage,
 	Input,
-	GuildSelect,
 	Label,
 	Popover,
 	PopoverContent,
 	PopoverTrigger,
-	Profile,
 	SelectMenu,
 	Separator,
 	ScrollArea,
 	Sidebar,
-	MobileSidebar,
+	Switch,
 	Sheet,
 	SheetTrigger,
 	SheetHeader,
