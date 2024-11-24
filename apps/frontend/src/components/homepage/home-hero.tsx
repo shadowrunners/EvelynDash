@@ -1,6 +1,6 @@
 'use client';
 
-import { observerHook, styles, variants } from '@/utils/util';
+import { observerHook, styles, variants } from '@/utils';
 import { motion } from 'framer-motion';
 import { useState, useRef, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
@@ -8,13 +8,13 @@ import Image from 'next/image';
 
 // TODO: Re-do this completely so it's more modern. Possibly use Aceternity UI.
 
-const Hero = () => {
+export function Hero() {
 	const translation = useTranslations('main');
 
 	return (
 		<section className='flex md:flex-row flex-col h-screen text-center'>
 			<Image
-				src='https://res.cloudinary.com/shadowrunners/image/upload/q_auto/evl1_idtuxu.webp'
+				src='/images/evl1_idtuxu.webp'
 				fill={true}
 				priority={true}
 				alt='coolbg'
@@ -42,5 +42,3 @@ const Hero = () => {
 		</section>
 	);
 };
-
-export default Hero;
