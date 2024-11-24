@@ -1,4 +1,7 @@
-/** This file houses all the types for Features. */
+/**
+ * This file houses all the types for Features.
+ * @deprecated Will be removed in a future update.
+ */
 
 import { ReactElement, ReactNode } from 'react';
 import {
@@ -6,14 +9,13 @@ import {
 	useConfessionSystem,
 	useGoodbyeSystem,
 	useLevellingSystem,
-	useLogsSystem,
 	useTicketSystem,
 	useVerifySystem,
 	useWelcomeFeature,
 	useStarboardSystem,
 } from '@/features';
 
-import { LuDiff, LuMailQuestion, LuScrollText, LuStar, LuTicket } from 'react-icons/lu';
+import { LuDiff, LuMailQuestion, LuStar, LuTicket } from 'react-icons/lu';
 import { IoShieldCheckmarkSharp } from 'react-icons/io5';
 import { MdMessage, MdPhishing } from 'react-icons/md';
 import { useTranslations } from 'next-intl';
@@ -23,7 +25,6 @@ export type CustomFeatures = {
     antiphishing: AntiPhishingFeature,
     confessions: ConfessionsFeature,
     goodbye: GoodbyeFeature,
-    logs: LogsFeature,
     levelling: LevellingFeature,
     tickets: TicketsFeature,
     starboard: StarboardFeature,
@@ -56,6 +57,12 @@ export const Features = () => {
 			icon: <MdPhishing />,
 			useRender: useAntiPhishFeature,
 		},
+		// automod: {
+			//name: 'AutoMod',
+			//description: 'Protect your server. PLACEHOLDER',
+			//icon: <FaShield />,
+			//useRender: useAutoModFeature,
+		//},
 		confessions: {
 			name: t('features.confessions.title'),
 			description: t('features.confessions.description'),
@@ -67,12 +74,6 @@ export const Features = () => {
 			description: t('features.goodbye.description'),
 			icon: <MdMessage />,
 			useRender: useGoodbyeSystem,
-		},
-		logs: {
-			name: t('features.logs.title'),
-			description: t('features.logs.description'),
-			icon: <LuScrollText />,
-			useRender: useLogsSystem,
 		},
 		levelling: {
 			name: t('features.levelling.title'),
@@ -107,13 +108,54 @@ export const Features = () => {
 	};
 };
 
-export type AntiPhishingFeature = {}
+// eslint-disable-next-line @typescript-eslint/ban-types
+export type AntiPhishingFeature = {};
 
-export type ConfessionsFeature = {
-    channel?: string;
+export type AutoModFeature = {
+    alertsChannel: string;
+
+    mentionspam: {
+        enabled: boolean;
+        ruleId: string;
+    };
+
+    nsfwinvitelinks: {
+        enabled: boolean;
+        ruleId: string;
+    }
+
+    profanity: {
+        enabled: boolean;
+        ruleId: string;
+	};
+	sexualContent: {
+        enabled: boolean;
+        ruleId: string;
+	};
+	spam: {
+        enabled: boolean;
+        ruleId: string;
+	};
+	customKeyWord: {
+        enabled: boolean;
+        ruleId: string;
+		keyword: string;
+	};
+	zalgo: {
+        enabled: boolean;
+        ruleId: string;
+	};
+	emojiSpam: {
+        enabled: boolean;
+        ruleId: string;
+	};
+	inviteLinks: {
+        enabled: boolean;
+        ruleId: string;
+	};
 }
 
-export type LogsFeature = {
+export type ConfessionsFeature = {
     channel?: string;
 }
 
@@ -126,6 +168,10 @@ export type LevellingFeature = {
     restrictedRoles?: {
         value: string;
     }[] | string[];
+    roleRewards?: {
+        level: number;
+        roleId: string;
+    }[]
 }
 
 export type TicketsFeature = {
