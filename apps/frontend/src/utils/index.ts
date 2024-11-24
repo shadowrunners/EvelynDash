@@ -1,12 +1,54 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { MutableRefObject, Dispatch, SetStateAction } from 'react';
-import { type APIGuild, PermissionFlags, type Styles } from '@/types/types';
-import { Features, type IdFeature } from '@/types/features';
-import { usePathname } from 'next/navigation';
+import type { Styles, EvelynFeature } from '@/types';
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
-/** The styles used by the homepage. */
+import { MdMessage, MdPhishing } from "react-icons/md";
+import { FaShield } from 'react-icons/fa6';
+import { LuMailQuestion } from 'react-icons/lu';
+
+export function getFeatures(): EvelynFeature[] {
+    // TODO: Implement translations.
+
+    return [
+        {
+            name: 'Anti-Phishing',
+            description: 'Protect your server against bad actors trying to phish your users for their credentials.',
+            icon: MdPhishing,
+			href: '/features/antiphishing'
+        },
+		{
+			name: 'AutoMod',
+			description: 'PLACEHOLDER',
+			icon: FaShield,
+			href: '/features/automod'
+		},
+		{
+			name: 'Confessions',
+			description: 'PLACEHOLDER',
+			icon: LuMailQuestion,
+			href: '/features/confessions'
+		},
+		{
+			name: 'Goodbye',
+			description: 'PLACEHOLDER',
+			icon: MdMessage,
+			href: '/features/goodbye'
+		},
+		{
+			name: 'Logs',
+			description: 'PLACEHOLDER',
+			icon: MdMessage,
+			href: '/features/logs'
+		}
+    ]
+}
+
+/**
+ * The styles used by the homepage.
+ * @deprecated Will be removed in a future update since they're not being reused anymore.
+ */
 export const styles: Styles = {
 	boxWidth: 'xl:max-w-[1280px] w-full',
 	boxNav: 'xl:max-w-[1920px] w-full',
@@ -41,25 +83,6 @@ export function observerHook(
 	};
 }
 
-/** The variants used for animations. */
-export const variants = {
-	hidden: { opacity: 0 },
-	visible: { opacity: 1 },
-};
-
-/**
- * Returns the guild ID.
- * @returns {string} The guild's ID.
- */
-export function useGuildId(): string {
-	return usePathname().split('/')[3];
-}
-
-/** Filters the guilds where the user doesn't have the Administrator permission. */
-export function filterGuilds(guild: APIGuild) {
-	return (Number(guild.permissions) & PermissionFlags.ADMINISTRATOR) !== 0;
-}
-
 /** The function used by all @shadcn/ui elements. */
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
@@ -72,13 +95,4 @@ export function toRGB(num: number) {
 		g = (num & 0xff00) >>> 8,
 		r = (num & 0xff0000) >>> 16;
 	return 'rgb(' + [r, g, b].join(',') + ')';
-}
-
-export function getFeatures(): IdFeature<any>[] {
-	return Object.entries(Features()).map(([k, v]) => {
-		return {
-			id: k,
-			...v,
-		};
-	});
 }
