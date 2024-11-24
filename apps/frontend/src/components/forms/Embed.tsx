@@ -47,7 +47,7 @@ export const Embed = ({ fullData, register, control }: IEmbed<any>) => {
 	const embed = fullData.embed as IEmbedData;
 	return (
 		<Fragment>
-			<div className='flex-1 black2 p-5 rounded-3xl'>
+			<div className='flex-1 bg-secondary p-5 rounded-3xl'>
 				<h1 className='text-xl font-semibold mb-2'>
 					Embed Settings
 				</h1>
@@ -118,7 +118,7 @@ export const Embed = ({ fullData, register, control }: IEmbed<any>) => {
 					<DiscordMessage
 						author="Evelyn"
 						avatar="https://cdn.discordapp.com/avatars/274973338676494347/00dcf84af54a0a58d2394b4054e0f7f5.png?size=100"
-						className='black2'
+						className='bg-secondary'
 					>
 						<DiscordMessage>
 							{embed?.content}
