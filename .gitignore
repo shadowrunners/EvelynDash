@@ -28,6 +28,11 @@ out/
 build
 dist
 
+# jetbrains
+.idea
+
+# vscode
+.vscode
 
 # Debug
 npm-debug.log*
@@ -37,6 +42,3 @@ yarn-error.log*
 # Misc
 .DS_Store
 *.pem
-
-.vercel
-.vscode
