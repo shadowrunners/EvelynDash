@@ -6,16 +6,26 @@ import { routing } from '@/i18n/routing';
 import type { ReactNode } from 'react';
 import '@/styles/global.css';
 
-export default async function LocaleLayout({
-	children,
-	params: { locale }
-}: {
-	children: ReactNode;
-	params: { locale: string };
-}) {
+export default async function LocaleLayout(
+	props: {
+        children: ReactNode;
+        params: Promise<{ locale: string }>;
+    },
+) {
+	const params = await props.params;
+
+	const {
+		locale,
+	} = params;
+
+	const {
+		children,
+	} = props;
+
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	if (!routing.locales.includes(locale as any)) {
 		notFound();
-	};
+	}
 
 	const messages = await getMessages();
 

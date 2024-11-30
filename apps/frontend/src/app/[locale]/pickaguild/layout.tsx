@@ -1,8 +1,8 @@
-import { ReactNode } from "react";
+import { ReactNode } from 'react';
 import { Navbar, Footer } from '@/components/homepage';
 
 export default function GuildLayout({ children }: { children: ReactNode }) {
-    return (
+	return (
 		<div className='bg-black w-full overflow-hidden font-sans'>
 			<div className='sm:px-16 px-6 flex justify-center items-center'>
 				<div className='xl:max-w-[1920px] w-full'>

@@ -56,7 +56,7 @@ export default function PrivacyPage() {
 							{t('section2.content_3')} <br />
 							{t('section2.content_4')} <br />
 							<br />
-							{t('section2.content_5')} 
+							{t('section2.content_5')}
 						</p>
 
 						<h4 className='mt-7 xl:mt-2 text-left text-lg text-[18px] font-bold'>
