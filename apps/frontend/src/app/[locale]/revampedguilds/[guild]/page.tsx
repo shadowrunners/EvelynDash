@@ -1,4 +1,5 @@
-'use client';
+'use client';;
+import { use } from "react";
 
 import { Card, CardContent, CardFooter, Button } from '@/components/ui';
 import { LoadingPanel, QueryStatus } from '@/components/panels';
@@ -10,12 +11,13 @@ import { useRouter } from 'next/navigation';
 import { getFeatures } from '@/utils';
 import type { HVGuild } from '@/types/types';
 
-const GuildPage = ({ params }: { params: { guild: string }}) => {
-	const guild = params.guild;
-	const t = useTranslations('error');
-	const query = useGuildInfoQuery(guild);
+const GuildPage = (props: { params: Promise<{ guild: string }>}) => {
+    const params = use(props.params);
+    const guild = params.guild;
+    const t = useTranslations('error');
+    const query = useGuildInfoQuery(guild);
 
-	return (
+    return (
 		<QueryStatus query={query} loading={<LoadingPanel />} error={t('load')}>
 			{query?.data?.id != null ? (
 				<GuildPanel guild={guild} data={query.data} />
