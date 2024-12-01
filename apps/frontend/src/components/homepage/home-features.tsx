@@ -6,66 +6,67 @@ import { FaMusic } from 'react-icons/fa';
 import { FaTicket } from 'react-icons/fa6';
 import { EvelynCardFeature } from '@/types';
 import { FeatureCard } from '../ui/featurecard';
+import { useTranslations } from 'next-intl';
 
 export function Features() {
+	const t = useTranslations('home');
 	const features: EvelynCardFeature[] = [
 		{
-			name: 'Music',
-			description: 'With the music module powered by our custom in-house package, you can make your gaming sessions inside voice channels even more enjoyable. You can play music from numerous platforms* such as Deezer, Spotify and more!',
+			name: t('features.feature1.name'),
+			description: t('features.feature1.description'),
 			icon: FaMusic,
-			additionalInfo: '(*) Evelyn does not support YouTube or its music related derivative, YouTube Music.'
+			additionalInfo: t('features.feature1.additionalInfo'),
 		},
 		{
-			name: 'Moderation',
-			description: 'Keep your server safe with our simple, yet powerful suite of moderation tools ranging from basic moderation tools such as /ban and /kick to AutoModeration, automatic phishing link detection and moderation logs.',
+			name: t('features.feature2.name'),
+			description: t('features.feature2.description'),
 			icon: HiShieldCheck,
-			additionalInfo: 'AutoMod powered by Discord w/ additional custom filters. Anti-Phishing powered by the Anti-Fish API.'
+			additionalInfo: t('features.feature2.additionalInfo'),
 		},
 		{
-			name: 'Welcome & Goodbye',
-			description: 'Give your new members a warm welcome or a heartfelt goodbye with our Welcome & Goodbye plugins that offer fully customizable embeds to your heart\'s content (also includes custom variables that can be used).',
+			name: t('features.feature3.name'),
+			description: t('features.feature3.description'),
 			icon: BsSendFill,
-			additionalInfo: 'Information about custom variables is available in Evelyn\'s documentation.'
+			additionalInfo: t('features.feature3.additionalInfo'),
 		},
 		{
-			name: 'Tickets',
-			description: '',
+			name: t('features.feature4.name'),
+			description: t('features.feature4.description'),
 			icon: FaTicket,
-			additionalInfo: 'AutoMod powered by Discord w/ additional custom filters. Anti-Phishing powered by the Anti-Fish API.'
+			additionalInfo: t('features.feature4.additionalInfo'),
 		},
 		{
-			name: 'Anime, Manga, Movies & TV Show Lookup',
-			description: 'Get information such as synospis, genres, age rating, average rating and much more regarding your favorite anime, manga, movie or TV show directly inside Discord.',
+			name: t('features.feature5.name'),
+			description: t('features.feature5.description'),
 			icon: HiShieldCheck,
-			additionalInfo: 'Anime & Manga information provided by Kitsu. TV & movie information provided by TheMovieDatabase.'
+			additionalInfo: t('features.feature5.additionalInfo'),
 		},
 		{
-			name: 'Steam Wishlist Picker',
-			description: 'For those of you with too many games in their Steam wishlist, this plugin will query your profile and give you a random game you should try out.',
+			name: t('features.feature6.name'),
+			description: t('features.feature6.description'),
 			icon: HiShieldCheck,
-			additionalInfo: 'Your Steam profile must be public so Evelyn can query it. This plugin is also offered as a separate web service by us.'
+			additionalInfo: t('features.feature6.additionalInfo'),
 		},
 		{
-			name: 'Spotify Integration',
-			description: 'In addition to music, Evelyn also offers direct integration with Spotify\'s playlists feature with you being able to save songs to your "Liked Songs" library by just pushing a button in the music panel.',
+			name: t('features.feature7.name'),
+			description: t('features.feature7.description'),
 			icon: HiShieldCheck,
-			additionalInfo: 'Requires a Spotify account. You can authorize Evelyn by running /spotify link in your server.'
+			additionalInfo: t('features.feature7.additionalInfo'),
 		},
 		{
-			name: 'Some other feature that I can\'t think about right now',
-			description: 'Placeholder text until I find one',
+			name: t('features.feature8.name'),
+			description: t('features.feature8.description'),
 			icon: HiShieldCheck,
-			additionalInfo: 'Placeholder too'
+			additionalInfo: t('features.feature8.additionalInfo'),
 		},
-	]
+	];
 
 	return (
 		<section>
 			<div className='w-full justify-between items-center md:flex-row flex-col sm:mb-16 mb-6 relative z-[1] font-sans'>
-				<h2 className='text-center font-semibold xs:text-[48px] text-[40px] xs:leading-[76.8px] leading-[66.8px] w-full bg-clip-text text-transparent bg-gradient-to-b from-neutral-200 to-neutral-500'>Features</h2>
+				<h2 className='text-center font-semibold xs:text-[48px] text-[40px] xs:leading-[76.8px] leading-[66.8px] w-full bg-clip-text text-transparent bg-gradient-to-b from-neutral-200 to-neutral-500'>{t('features.header.title')}</h2>
 				<p className='font-normal text-dimWhite text-[18px] leading-[30.8px] text-center mt-5'>
-					Supercharge your Discord experience to a new level with Evelyn's
-					powerful toolkit, packed with an array of exciting features!
+					{t('features.header.description')}
 				</p>
 			</div>
 
