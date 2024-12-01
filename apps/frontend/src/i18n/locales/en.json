@@ -25,6 +25,52 @@
             "btn_notsignedin": "Sign in",
             "btn_signedin": "Manage Servers"
         },
+        "features": {
+            "header": {
+                "title": "Features",
+                "description": "Supercharge your Discord experience to a new level with Evelyn's powerful toolkit, packed with an array of exciting features!"
+            },
+            "feature1": {
+                "name": "Music",
+                "description": "With the music module powered by our custom in-house package, you can make your gaming sessions inside voice channels even more enjoyable. You can play music from numerous platforms* such as Deezer, Spotify and more!",
+                "additionalInfo": "Evelyn does not support YouTube or its music related derivative, YouTube Music."
+            },
+            "feature2": {
+                "name": "Moderation",
+                "description": "Keep your server safe with our simple, yet powerful suite of moderation tools ranging from basic moderation tools such as /ban and /kick to AutoModeration, automatic phishing link detection and moderation logs.",
+                "additionalInfo": "AutoMod powered by Discord w/ additional custom filters. Anti-Phishing powered by the Anti-Fish API."
+            },
+            "feature3": {
+                "name": "Welcome & Goodbye",
+                "description": "Give your new members a warm welcome or a heartfelt goodbye with our Welcome & Goodbye plugins that offer fully customizable embeds to your heart's content (also includes custom variables that can be used).",
+                "additionalInfo": "Information about custom variables is available in Evelyn's documentation."
+            },
+            "feature4": {
+                "name": "Tickets",
+                "description": "PLACEHOLDER TEXT",
+                "additionalInfo": "PLACEHOLDER TEXT"
+            },
+            "feature5": {
+                "name": "Anime, Manga, Movies & TV Show Lookup",
+                "description": "Get information such as synospis, genres, age rating, average rating and much more regarding your favorite anime, manga, movie or TV show directly inside Discord.",
+                "additionalInfo": "Anime & Manga information provided by Kitsu. TV & movie information provided by TheMovieDatabase."
+            },
+            "feature6": {
+                "name": "Steam Wishlist Picker",
+                "description": "For those of you with too many games in their Steam wishlist, this plugin will query your profile and give you a random game you should try out.",
+                "additionalInfo": "Your Steam profile must be public so Evelyn can query it. This plugin is also offered as a separate web service by us."
+            },
+            "feature7": {
+                "name": "Spotify Integration",
+                "description": "In addition to music, Evelyn also offers direct integration with Spotify's playlists feature with you being able to save songs to your 'Liked Songs' library by just pushing a button in the music panel.",
+                "additionalInfo": "Requires a Spotify account. You can authorize Evelyn by running /spotify link in your server."
+            },
+            "feature8": {
+                "name": "Some other feature that I can't think about right now",
+                "description": "PLACEHOLDER TEXT",
+                "additionalInfo": "PLACEHOLDER TEXT"
+            }
+        },
         "footer": {
             "legal": {
                 "name": "Legal",
@@ -53,13 +99,6 @@
             "header": "Guild Selection",
             "description": "Select the guild you'd like to configure."
         }
-    },
-    "main": {
-        "footer_punchline": "Unleash the full potential of your server.",
-        "footer_links": "Links",
-        "footer_link1": "Privacy Policy",
-        "footer_link2": "Terms of Service",
-        "footer_copyright": "© 2023 Shadowrunners, all rights reserved. Made with 💝 by scrappie."
     },
     "privacy": {
         "header": {
