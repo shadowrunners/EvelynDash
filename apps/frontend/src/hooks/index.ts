@@ -1,12 +1,9 @@
-import type { APIUser } from 'discord-api-types/v10';
-
 import type { CustomFeatures } from '@/types/features';
 import type { SPAPIGuild, SPAPIPartialGuild } from '@/types';
 import { QueryClient, useMutation, useQuery } from '@tanstack/react-query';
 import {
 	disableFeature,
 	enableFeature,
-	fetchGuildChannels,
 	fetchGuildInfo,
 	fetchGuildRoles,
 	getFeature,
@@ -29,21 +26,15 @@ export const client = new QueryClient({
 });
 
 async function useAPI({
-	apiType,
 	endpoint,
 	method,
 	session,
 }: {
-	apiType: 'dashAPI' | 'discordAPI';
 	endpoint: string;
 	method: 'GET' | 'POST' | 'PATCH' | 'DELETE';
 	session: string | undefined;
 }) {
-	let url: string;
-	if (apiType === 'dashAPI') url = process.env.NEXT_PUBLIC_API_URL as string;
-	else url = 'https://discord.com/api/v10';
-
-	const res = await fetch(`${url}${endpoint}`, {
+	const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${endpoint}`, {
 		method,
 		headers: {
 			Authorization: `Bearer ${session}`,
@@ -53,7 +44,7 @@ async function useAPI({
 	if (res.status === 401) {
 		await signOut();
 		return null;
-	};
+	}
 
 	if (!res.ok) {
 		const response = await res.json();
@@ -68,31 +59,9 @@ export function useGuilds() {
 
 	return useQuery<SPAPIPartialGuild[]>({
 		queryFn: async () => {
-			return await useAPI({
-				apiType: 'dashAPI',
-				endpoint: '/users/@me/guilds',
-				method: 'GET',
-				session,
-			});
+			return await useAPI({ endpoint: '/users/@me/guilds', method: 'GET', session });
 		},
 		queryKey: ['user_guilds'],
-		enabled: status === 'authenticated',
-	}, client);
-}
-
-export function useUser() {
-	const { session, status } = useAccessToken();
-	
-	return useQuery<APIUser>({
-		queryFn: async () => {
-			return await useAPI({
-				apiType: 'discordAPI',
-				endpoint: '/users/@me',
-				method: 'GET',
-				session,
-			}) as APIUser;
-		},
-		queryKey: ['user_me'],
 		enabled: status === 'authenticated',
 	}, client);
 }
@@ -103,12 +72,7 @@ export function useCurrentGuild() {
 
 	return useQuery<SPAPIGuild>({
 		queryFn: async () => {
-			return await useAPI({
-				apiType: 'dashAPI',
-				endpoint: `/guilds/${guildId}`,
-				method: 'GET',
-				session,
-			}) as SPAPIGuild;
+			return await useAPI({ endpoint: `/guilds/${guildId}`, method: 'GET', session }) as SPAPIGuild;
 		},
 		queryKey: ['specific_guild'],
 		enabled: status === 'authenticated',
@@ -121,21 +85,14 @@ export function useFeature<T>(feature: string) {
 
 	return useQuery<T>({
 		queryFn: async () => {
-			return await useAPI({
-				apiType: 'dashAPI',
-				endpoint: `/guilds/${guildId}/features/${feature}`,
-				method: 'GET',
-				session,
-			});
+			return await useAPI({ endpoint: `/guilds/${guildId}/features/${feature}`, method: 'GET', session }) as T;
 		},
 		queryKey: ['feature_data'],
 		enabled: status === 'authenticated',
-	}, client)
+	}, client);
 }
 
-export function useDev() {
-
-}
+export function useDev() {}
 
 /** Gets the access token from the session. */
 function useAccessToken() {
@@ -151,8 +108,6 @@ const Keys = {
 	guildChannels: (guild: string) => ['guild_channel', guild],
 };
 
-
-
 export function updateFeatureData(feature: string, data: FormData) {
 	const { session, status } = useAccessToken();
 	const guildId = useGuildId();
@@ -161,7 +116,7 @@ export function updateFeatureData(feature: string, data: FormData) {
 		queryFn: async () => await updateFeature(guildId, feature, data, session!),
 		queryKey: ['feature_data'],
 		enabled: status === 'authenticated',
-	})
+	});
 }
 
 export function useGuildInfoQuery(guild: string) {
@@ -240,16 +195,6 @@ export function useGuildRolesQuery(guild: string) {
 	return useQuery({
 		queryFn: async () => await fetchGuildRoles(guild, session!),
 		queryKey: Keys.guildRoles(guild),
-		enabled: status === 'authenticated',
-	}, client);
-}
-
-export function useGuildChannelsQuery(guild: string) {
-	const { session, status } = useAccessToken();
-
-	return useQuery({
-		queryFn: async () => await fetchGuildChannels(guild, session!),
-		queryKey: Keys.guildChannels(guild),
 		enabled: status === 'authenticated',
 	}, client);
 }
