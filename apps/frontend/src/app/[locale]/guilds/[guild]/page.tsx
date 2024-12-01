@@ -1,19 +1,15 @@
 'use client';
 
-import { Card, CardContent, CardFooter, Button, CardTitle, CardHeader } from '@/components/ui';
+import { Card, CardContent, CardFooter, Button } from '@/components/ui';
 import { useTranslations } from 'next-intl';
-import { BiSolidErrorAlt } from 'react-icons/bi';
-import { FaRobot } from 'react-icons/fa';
-import { useCurrentGuild, useGuildInfoQuery } from '@/hooks';
-import { useRouter } from 'next/navigation';
 import { getFeatures } from '@/utils';
-import type { HVGuild } from '@/types/types';
 import { useGuild } from '@/components/contexts/guildcontext';
 import { Link } from '@/i18n/routing';
 
 export default function GuildPage() {
 	const guild = useGuild();
 	const features = getFeatures();
+	const t = useTranslations();
 
 	return (
 		<div className="">
@@ -40,7 +36,7 @@ export default function GuildPage() {
 				<h1 className='font-semibold text-[23px] font-sans'>Features</h1>
 				<section className='flex-row grid grid-cols-1 md:grid-cols-3 2xl:grid-cols-3 gap-3'>
 					{features.map((feature) => (
-						<Card className='bg-primary text-white font-sans'>
+						<Card className='bg-primary text-white font-sans' key={feature.name}>
 							<CardContent className='flex flex-gap gap-3 mt-5'>
 								<div className='flex rounded-xl w-[50px] h-[50px] text-3xl bg-black border justify-center items-center'>
 									<feature.icon className='text-white' />
@@ -58,7 +54,7 @@ export default function GuildPage() {
 								<Link href={`/guilds/${guild?.data.id}${feature.href}`}>
 									<Button
 										variant='default'
-										className='rounded-2xl text-white font-sans font-semibold bg-black'
+										className='rounded-2xl text-white font-sans font-semibold bg-black hover:bg-white hover:text-black'
 									>
 										Manage
 									</Button>
@@ -69,5 +65,5 @@ export default function GuildPage() {
 				</section>
 			</div>
 		</div>
-	)
+	);
 }
