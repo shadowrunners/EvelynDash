@@ -22,7 +22,7 @@ export type EvelynFeature = {
 	/** The icon of the feature. */
     icon: IconType;
 	/** The href of the feature. */
-	href: string;
+	href?: string;
 };
 
 /** The override type. */
@@ -84,8 +84,8 @@ export type FormParams = {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	form: UseFormReturn<any, any>;
 	formName: string;
-	formLabel: string;
-	formDescription: string;
+	formLabel?: string;
+	formDescription?: string;
 }
 
 export type {
