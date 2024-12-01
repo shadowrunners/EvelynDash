@@ -1,15 +1,13 @@
 'use client';
 
-import { observerHook, styles, variants } from '@/utils';
-import { motion } from 'framer-motion';
-import { useState, useRef, useEffect } from 'react';
+import { styles } from '@/utils';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 
 // TODO: Re-do this completely so it's more modern. Possibly use Aceternity UI.
 
 export function Hero() {
-	const translation = useTranslations('main');
+	const t = useTranslations('home');
 
 	return (
 		<section className='flex md:flex-row flex-col h-screen text-center'>
@@ -30,13 +28,13 @@ export function Hero() {
 					className={`${styles.heading2} text-center`}
 					key='hero_main_heading'
 				>
-					{translation('hero_main1')} <span className='text-gradient'>{translation('hero_main2')}</span> {translation('hero_main3')}
+					{t('main.hero.main1')} <span className='text-gradient'>{t('main.hero.main2')}</span> {t('main.hero.main3')}
 				</h1>
 				<p
 					className={`${styles.paragraph} max-w-[470px] mt-5`}
 					key='hero_main_paragraph'
 				>
-					{translation('hero_punchline')}
+					{t('main.hero.punchline')}
 				</p>
 			</div>
 		</section>
