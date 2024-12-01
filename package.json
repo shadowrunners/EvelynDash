@@ -7,7 +7,11 @@
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",
-    "lint": "turbo lint"
+    "lint": "turbo lint",
+    "dev:web": "turbo dev --filter=./apps/frontend --filter=./apps/backend",
+    "dev:frontend": "turbo dev --filter=./apps/frontend",
+    "dev:backend": "turbo dev --filter=./apps/backend",
+    "dev:docs": "turbo dev --filter=./apps/docs"
   },
   "devDependencies": {
     "turbo": "latest"
