@@ -60,7 +60,7 @@ export function ChannelSelectForm({
 								</FormControl>
 								<SelectContent>
 									{channels?.map((channel) => (
-										<SelectItem value={channel.id}>{channel.name}</SelectItem>
+										<SelectItem key={channel.id} value={channel.id}>{channel.name}</SelectItem>
 									))}
 								</SelectContent>
 							</Select>
@@ -73,7 +73,7 @@ export function ChannelSelectForm({
 				/>
 			</form>
 		</Form>
-	)
+	);
 }
 
 export const MultiChannelSelectForm: ControlledInput<Omit<SelectMenuProps, 'value' | 'onChange'>> = ({
