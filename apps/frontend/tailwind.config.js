@@ -66,9 +66,8 @@ module.exports = {
     			sm: 'calc(var(--radius) - 4px)',
     		},
     		fontFamily: {
-    			poppins: ['Poppins', 'sans-serif'],
-    			sans: ['var(--font-geist-sans)'],
-    			mono: ['var(--font-geist-mono)'],
+    			sans: ['Geist', 'sans-serif'],
+    			mono: ['Geist Mono', 'sans-serif'],
     		},
     		keyframes: {
     			'accordion-down': {
