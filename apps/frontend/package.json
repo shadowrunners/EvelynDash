@@ -3,7 +3,7 @@
   "version": "2.1.0",
   "license": "MIT",
   "scripts": {
-    "dev": "next dev",
+    "dev": "cross-env NODE_OPTIONS='--inspect' next dev",
     "build": "next build",
     "start": "next start",
     "dev:turbopack": "next dev --turbopack"
@@ -25,7 +25,7 @@
     "@radix-ui/react-switch": "^1.1.1",
     "@radix-ui/react-tabs": "^1.1.1",
     "@radix-ui/react-tooltip": "^1.1.4",
-    "@react-three/fiber": "^8.17.10",
+    "@react-three/fiber": "9.0.0-rc.1",
     "@skyra/discord-components-react": "^3.6.1",
     "@tanstack/react-query": "^5.61.3",
     "aos": "^2.3.4",
@@ -52,6 +52,7 @@
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",
     "three": "^0.170.0",
+    "vaul": "^1.1.1",
     "zod": "^3.23.8"
   },
   "devDependencies": {
@@ -66,6 +67,7 @@
     "@typescript-eslint/eslint-plugin": "^8.15.0",
     "@typescript-eslint/parser": "^8.15.0",
     "autoprefixer": "^10.4.20",
+    "cross-env": "^7.0.3",
     "eslint": "^9.15.0",
     "eslint-config-next": "^15.0.3",
     "eslint-config-prettier": "9.1.0",
