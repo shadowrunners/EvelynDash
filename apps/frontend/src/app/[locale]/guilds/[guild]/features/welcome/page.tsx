@@ -1,0 +1,75 @@
+'use client';
+
+import { useTranslations } from 'next-intl';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { useFeature } from '@/components/contexts/featurecontext';
+import { ChannelSelectForm, TextForm } from '@/components/forms';
+import { Savebar } from '@/components/ui/savebar';
+import { EmbedForm } from '@/components/forms/embedform';
+
+const FormSchema = z.object({
+	channel: z
+		.string({
+			required_error: 'Select a channel in order to receive logs.',
+		}),
+	embed: z.object({
+		content: z.string(),
+		color: z.string(),
+		title: z.string(),
+		author: z.object({
+			name: z.string(),
+			iconURL: z.string(),
+		}),
+		description: z.string(),
+		thumbnail: z.string(),
+		image: z.string(),
+		footer: z.object({
+			text: z.string(),
+			iconURL: z.string(),
+		}),
+	}),
+});
+
+export default function WelcomeFeature() {
+	const feature = useFeature<z.infer<typeof FormSchema>>();
+	const form = useForm<z.infer<typeof FormSchema>>({
+		resolver: zodResolver(FormSchema),
+		defaultValues: {
+			channel: feature?.data.channel || '',
+			embed: {
+				title: feature?.data?.embed?.title || '',
+				content: feature?.data?.embed?.content || '',
+				color: feature?.data?.embed?.color || '',
+				description: feature?.data?.embed?.description || '',
+				image: feature?.data?.embed?.image || '',
+				footer: {
+					text: feature?.data?.embed?.footer.text || '',
+					iconURL: feature?.data?.embed?.footer.iconURL || '',
+				},
+				thumbnail: feature?.data?.embed?.thumbnail || '',
+			},
+		},
+	});
+	const t = useTranslations('dash');
+
+	console.log(form);
+
+	return (
+		<div>
+			<h1 className="text-xl font-semibold">{t('features.logs.title')}</h1>
+			<p className="text-dimWhite">{t('features.logs.description')}</p>
+
+			<div className="flex-row grid grid-cols-1 md:grid-cols-3 2xl:grid-cols-3 mt-5 gap-4">
+				<ChannelSelectForm form={form} formName='channel' formLabel='Channel' formDescription='PLACEHOLDER' />
+				<TextForm form={form} formName='embed.content' formLabel='Message' formDescription='The message that will be sent alongside the embed.' />
+			</div>
+
+			<EmbedForm form={form} formName='embed' formLabel='Embed Settings' formDescription='Manage the embed that will be sent alongside the message.' />
+
+			<Savebar feature='welcome' form={form} />
+		</div>
+	);
+}
+
