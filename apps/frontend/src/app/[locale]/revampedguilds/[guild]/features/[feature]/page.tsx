@@ -12,18 +12,18 @@ import { Button } from '@/components/ui';
 export type Params = { feature: keyof CustomFeatures; };
 
 const FeaturePage = (props: { params: Promise<{ feature: keyof CustomFeatures }> }) => {
-    const params = use(props.params);
-    const { feature } = params;
-    const guild = useGuildId();
+	const params = use(props.params);
+	const { feature } = params;
+	const guild = useGuildId();
 
-    const query = useFeatureQuery(guild, feature);
-    const featureConfig = Features()[feature] as FeatureConfig<typeof feature>;
-    const skeleton = featureConfig?.useSkeleton?.();
+	const query = useFeatureQuery(guild, feature);
+	const featureConfig = Features()[feature] as FeatureConfig<typeof feature>;
+	const skeleton = featureConfig?.useSkeleton?.();
 
-    if (featureConfig == null) return <NotFound />;
-    if (query.isError) return <NotEnabled feature={params.feature} />;
-    if (query.isLoading) return skeleton != null ? <Fragment>{skeleton}</Fragment> : <LoadingPanel />;
-    return <UpdateFeaturePanel key={feature} guild={guild} featureId={feature} feature={query.data} config={featureConfig} />;
+	if (featureConfig == null) return <NotFound />;
+	if (query.isError) return <NotEnabled feature={params.feature} />;
+	if (query.isLoading) return skeleton != null ? <Fragment>{skeleton}</Fragment> : <LoadingPanel />;
+	return <UpdateFeaturePanel key={feature} guild={guild} featureId={feature} feature={query.data} config={featureConfig} />;
 };
 
 function NotEnabled({ feature }: Params) {
