@@ -53,15 +53,6 @@ input[type=number] {
   background-clip: text;
 }
 
-/** Overrides the styles from the Discord Components package to match the color scheme of the dashboard. */
-.discord-messages {
-  background-color: #181114 !important;
-}
-
-.discord-embed .discord-embed-root .discord-embed-wrapper {
-  background-color: #181114 !important;
-}
-
 .sidebar {
   -webkit-animation: slide-top 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
   animation: slide-top 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
