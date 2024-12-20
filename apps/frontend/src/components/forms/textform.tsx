@@ -21,7 +21,11 @@ export function TextForm({
 								{formLabel}
 							</FormLabel>
 							<FormControl>
-								<Textarea placeholder='Write a cool message here! ✨' className='resize-none' {...field} />
+								<Textarea
+									placeholder='Write a cool message here! ✨'
+									className='resize-none'
+									{...field}
+								/>
 							</FormControl>
 							<FormDescription>
 								{formDescription}
