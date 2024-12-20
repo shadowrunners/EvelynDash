@@ -1,48 +1,65 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { MutableRefObject, Dispatch, SetStateAction } from 'react';
 import type { Styles, EvelynFeature } from '@/types';
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
-import { MdMessage, MdPhishing } from "react-icons/md";
+import { MdMessage, MdPhishing } from 'react-icons/md';
 import { FaShield } from 'react-icons/fa6';
 import { LuMailQuestion } from 'react-icons/lu';
 
 export function getFeatures(): EvelynFeature[] {
-    // TODO: Implement translations.
+	// TODO: Implement translations.
 
-    return [
-        {
-            name: 'Anti-Phishing',
-            description: 'Protect your server against bad actors trying to phish your users for their credentials.',
-            icon: MdPhishing,
-			href: '/features/antiphishing'
-        },
+	return [
+		{
+			name: 'Anti-Phishing',
+			description: 'Protect your server against bad actors trying to phish your users for their credentials.',
+			icon: MdPhishing,
+			href: '/features/antiphishing',
+		},
 		{
 			name: 'AutoMod',
-			description: 'PLACEHOLDER',
+			description: 'Protect your sever against malicious actors using AI powered auto moderation.',
 			icon: FaShield,
-			href: '/features/automod'
+			href: '/features/automod',
 		},
 		{
 			name: 'Confessions',
 			description: 'PLACEHOLDER',
 			icon: LuMailQuestion,
-			href: '/features/confessions'
+			href: '/features/confessions',
 		},
 		{
 			name: 'Goodbye',
 			description: 'PLACEHOLDER',
 			icon: MdMessage,
-			href: '/features/goodbye'
+			href: '/features/goodbye',
+		},
+		{
+			name: 'Levelling',
+			description: 'PLACEHOLDER',
+			icon: MdMessage,
+			href: '/features/levelling',
 		},
 		{
 			name: 'Logs',
 			description: 'PLACEHOLDER',
 			icon: MdMessage,
-			href: '/features/logs'
-		}
-    ]
+			href: '/features/logs',
+		},
+		{
+			name: 'Tickets',
+			description: 'PLACEHOLDER',
+			icon: MdMessage,
+			href: '/features/tickets',
+		},
+		{
+			name: 'Welcome',
+			description: 'PLACEHOLDER',
+			icon: MdMessage,
+			href: '/features/welcome',
+		},
+	];
 }
 
 /**
