@@ -4,9 +4,6 @@ import { QueryClient, useMutation, useQuery } from '@tanstack/react-query';
 import {
 	disableFeature,
 	enableFeature,
-	fetchGuildInfo,
-	fetchGuildRoles,
-	getFeature,
 	updateFeature,
 } from '@/hooks/fetch';
 import { signOut, useSession } from 'next-auth/react';
@@ -27,19 +24,41 @@ export const client = new QueryClient({
 
 async function useAPI({
 	endpoint,
+	data,
 	method,
 	session,
 }: {
 	endpoint: string;
+	data?: FormData;
 	method: 'GET' | 'POST' | 'PATCH' | 'DELETE';
 	session: string | undefined;
 }) {
-	const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${endpoint}`, {
-		method,
-		headers: {
-			Authorization: `Bearer ${session}`,
-		},
-	});
+	let options: RequestInit;
+
+	console.log(data);
+	if (data) {
+		options = {
+			method,
+			body: JSON.stringify(data),
+			headers: {
+				Authorization: `Bearer ${session}`,
+				'Content-Type': 'application/json',
+			},
+		};
+	} else {
+		options = {
+			method,
+			headers: {
+				Authorization: `Bearer ${session}`,
+			},
+		};
+	}
+
+	console.log(options);
+
+
+
+	const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${endpoint}`, options);
 
 	if (res.status === 401) {
 		await signOut();
@@ -92,6 +111,51 @@ export function useFeature<T>(feature: string) {
 	}, client);
 }
 
+
+type UpdateFeatureOptions = {
+  guild: string;
+  feature: keyof CustomFeatures;
+  options: FormData | string;
+};
+
+export function useUpdateFeature() {
+	const { session } = useAccessToken();
+	const guildId = useGuildId();
+
+	return useMutation({
+		mutationFn: async ({ feature, data }: { feature: string; data: FormData; }) => {
+			return await await useAPI({ endpoint: `/guilds/${guildId}/features/${feature}`, data, method: 'PATCH', session });
+		},
+		mutationKey: ['feature_update'],
+	}, client);
+}
+
+
+export function useUpdateFeatureMutation() {
+	const { session } = useAccessToken();
+
+	return useMutation({
+		mutationFn: async (options: UpdateFeatureOptions) => {
+			return await updateFeature(options.guild, options.feature, options.options, session!);
+		},
+		onSuccess: (updated, options) => {
+			const key = Keys.features(options.guild, options.feature);
+			return client.setQueryData(key, updated);
+		},
+	}, client);
+}
+
+// export function updateFeatureData(feature: string, data: FormData) {
+//	const { session, status } = useAccessToken();
+//	const guildId = useGuildId();
+
+//	return useQuery({
+//		queryFn: async () => await updateFeature(guildId, feature, data, session!),
+//		queryKey: ['feature_data'],
+//		enabled: status === 'authenticated',
+//	});
+// }
+
 export function useDev() {}
 
 /** Gets the access token from the session. */
@@ -108,36 +172,6 @@ const Keys = {
 	guildChannels: (guild: string) => ['guild_channel', guild],
 };
 
-export function updateFeatureData(feature: string, data: FormData) {
-	const { session, status } = useAccessToken();
-	const guildId = useGuildId();
-
-	return useQuery({
-		queryFn: async () => await updateFeature(guildId, feature, data, session!),
-		queryKey: ['feature_data'],
-		enabled: status === 'authenticated',
-	});
-}
-
-export function useGuildInfoQuery(guild: string) {
-	const { session, status } = useAccessToken();
-
-	return useQuery<HVGuild | null>({
-		queryFn: async () => await fetchGuildInfo(guild, session!),
-		queryKey: Keys.guild_info(guild),
-		enabled: status === 'authenticated',
-	}, client);
-}
-
-export function useFeatureQuery<K extends keyof CustomFeatures>(guild: string, feature: K) {
-	const { session, status } = useAccessToken();
-
-	return useQuery({
-		queryFn: async () => await getFeature(guild, feature, session!),
-		queryKey: Keys.features(guild, feature),
-		enabled: status === 'authenticated',
-	}, client);
-}
 
 type EnableFeatureOptions = { guild: string; feature: string; enabled: boolean };
 export function useEnableFeatureMutation() {
@@ -166,36 +200,6 @@ export function useEnableFeatureMutation() {
 				};
 			});
 		},
-	}, client);
-}
-
-type UpdateFeatureOptions = {
-  guild: string;
-  feature: keyof CustomFeatures;
-  options: FormData | string;
-};
-
-export function useUpdateFeatureMutation() {
-	const { session } = useAccessToken();
-
-	return useMutation({
-		mutationFn: async (options: UpdateFeatureOptions) => {
-			return await updateFeature(options.guild, options.feature, options.options, session!);
-		},
-		onSuccess: (updated, options) => {
-			const key = Keys.features(options.guild, options.feature);
-			return client.setQueryData(key, updated);
-		},
-	}, client);
-}
-
-export function useGuildRolesQuery(guild: string) {
-	const { session, status } = useAccessToken();
-
-	return useQuery({
-		queryFn: async () => await fetchGuildRoles(guild, session!),
-		queryKey: Keys.guildRoles(guild),
-		enabled: status === 'authenticated',
 	}, client);
 }
 
