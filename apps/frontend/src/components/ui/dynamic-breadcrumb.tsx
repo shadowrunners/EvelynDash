@@ -12,7 +12,7 @@ export function DynamicBreadcrumb() {
 		{ href: `/guilds/${guild?.data.id}`, label: guild?.data.name },
 	];
 
-	const isFeaturePage = pathname.startsWith('/features/');
+	const isFeaturePage = pathname.split('/').includes('features');
 	const featureName = isFeaturePage ? pathname.split('/').pop() : null;
 
 	if (isFeaturePage && featureName) {
@@ -24,7 +24,7 @@ export function DynamicBreadcrumb() {
 			<BreadcrumbList>
 				{breadcrumbs.map((crumb, i) => (
 					<Fragment key={crumb.label}>
-						<BreadcrumbItem className="font-sans text-dimWhite text-base">
+						<BreadcrumbItem className="font-sans text-dimWhite text-base capitalize">
 							<BreadcrumbLink href={crumb.href}>
 								{crumb.label}
 							</BreadcrumbLink>
