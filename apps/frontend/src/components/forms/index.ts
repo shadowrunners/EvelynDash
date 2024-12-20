@@ -1,15 +1,13 @@
-import { ChannelSelectForm, MultiChannelSelectForm } from './channelselectform';
-import { SmallColorPickerForm } from './ColorPicker';
-import { Embed } from './Embed';
-import { RoleSelectForm, MultiRoleSelectForm } from './roleselectform';
+import { ChannelSelectForm } from './channelselectform';
+import { ColorPickerForm } from './colorpickerform';
+import { EmbedForm } from './embedform';
+import { RoleSelectForm } from './roleselectform';
 import { TextForm } from './textform';
 
 export {
 	ChannelSelectForm,
-	MultiChannelSelectForm,
-	SmallColorPickerForm,
-	Embed,
+	ColorPickerForm,
+	EmbedForm,
 	RoleSelectForm,
-	MultiRoleSelectForm,
 	TextForm,
 };
