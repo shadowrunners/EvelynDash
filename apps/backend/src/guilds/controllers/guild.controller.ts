@@ -159,7 +159,8 @@ export class GuildController {
 
 		const webhook = await this.bot.api.channels.createWebhook(
 			body.channel,
-			{ name: 'Evelyn · Confessions', avatar: self.avatar },
+			{ name: 'Evelyn · Confessions', avatar: `https://cdn.discordapp.com/avatars/${self.id}/${self.avatar}.webp` },
+			{ reason: 'A confessions channel was chosen or updated in the Evelyn dashboard by a user.' },
 		);
 
 		const encryptedToken = this.encryption.encrypt(
