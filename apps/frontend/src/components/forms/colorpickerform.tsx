@@ -4,7 +4,7 @@ import { Popover, PopoverTrigger, PopoverContent, Input, Form, FormField } from 
 import { HexColorPicker } from 'react-colorful';
 import { FormParams } from '@/types';
 
-export function SmallColorPickerForm({
+export function ColorPickerForm({
 	form,
 	formName,
 }: FormParams) {
