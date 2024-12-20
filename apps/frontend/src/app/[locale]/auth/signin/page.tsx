@@ -13,7 +13,7 @@ import {
 import { Vortex } from '@/components/ui/vortex';
 import { Link } from '@/i18n/routing';
 import { Fragment, useState } from 'react';
-import { LuLoader2 } from 'react-icons/lu';
+import { Loader2 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useSearchParams } from 'next/navigation';
 
@@ -22,7 +22,7 @@ export default function LoginPage() {
 	const t = useTranslations('auth');
 
 	// gets the callback url (non i18n since locale is already filled in)
-	const callbackUrl = useSearchParams().get('callbackUrl') as string;
+	const callbackUrl = useSearchParams().get('callbackUrl') ?? '/';
 
 	return (
 		<div className="w-full min-h-screen bg-black flex justify-center items-center font-sans">
@@ -41,7 +41,7 @@ export default function LoginPage() {
 							}}
 						>
 							{loading
-								? <LuLoader2 className="animate-spin" />
+								? <Loader2 className="animate-spin" />
 								: <Fragment><FaDiscord className="mr-3" />{t('oauth_button')}</Fragment>
 							}
 						</button>
