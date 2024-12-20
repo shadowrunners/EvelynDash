@@ -22,7 +22,7 @@
     "paths": {
       "@/*": ["./src/*"],
       "@Types": ["./src/types/index"],
-      "@Hooks": ["./src/hooks/hooks"],
+      "@hooks": ["./src/hooks/index"],
       "@UI": ["./src/components/ui/index"],
       "@Utils": ["./src/utils/util"],
       "@Features": ["./src/types/features"],
