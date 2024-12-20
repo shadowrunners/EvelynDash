@@ -1,96 +1,67 @@
 'use client';
 
-import type {
-	ControlledInput,
-	SelectMenuProps,
-	SelectMenuOptionArray,
-} from '@Types';
-
+import type { FormParams } from '@Types';
 import {
 	Form,
 	FormField,
 	FormItem,
-	SelectMenu,
-	Spacer,
 	Select,
 	SelectContent,
-	SelectGroup,
 	SelectItem,
-	SelectLabel,
 	SelectTrigger,
 	SelectValue,
+	FormLabel,
+	FormControl,
+	FormDescription,
+	FormMessage,
 } from '@UI';
-import { useGuildRolesQuery, useGuildId } from '@/hooks';
-import { useForm } from 'react-hook-form';
-import { useMemo } from 'react';
+import { useGuild } from '../contexts/guildcontext';
 
-export const RoleSelect = ({
-	value, onChange, ...rest
-}: {
-	value: string;
-	onChange: (channel: string) => void;
-}) => {
-	const guild = useGuildId();
-	const { data, isLoading } = useGuildRolesQuery(guild);
-
-	const selected = useMemo(() => {
-		return value ? data?.find((r) => r.id === value.toString()) : null;
-	}, [value, data]);
+export function RoleSelectForm({
+	form,
+	formName,
+	formLabel,
+	formDescription,
+}: FormParams) {
+	const guild = useGuild();
 
 	return (
-		<Select value={value} onValueChange={onChange} disabled={isLoading} {...rest}>
-			<SelectTrigger>
-				<SelectValue placeholder='placeholder' defaultValue={selected?.id} key={selected?.id} />
-			</SelectTrigger>
-			<SelectContent className='bg-secondary text-white'>
-				<SelectGroup className='font-poppins m-2'>
-					<SelectLabel>Roles</SelectLabel>
-					{data?.map((role) => (
-						<SelectItem className='font-poppins' value={role.id.toString()} key={role.id.toString()}>{role.name}</SelectItem>
-					))}
-				</SelectGroup>
-			</SelectContent>
-		</Select>
+		<Form {...form}>
+			<form className='bg-muted/40 width-[50%] relative border-r-3xl space-y-6 p-4 shadow rounded-xl'>
+				<FormField
+					control={form.control}
+					name={formName}
+					render={({ field }) => (
+						<FormItem>
+							<FormLabel>
+								{formLabel}
+							</FormLabel>
+							<Select onValueChange={field.onChange} defaultValue={field.value} disabled={form.formState.isLoading}>
+								<FormControl>
+									<SelectTrigger>
+										<SelectValue placeholder='Select a role.' />
+									</SelectTrigger>
+								</FormControl>
+								<SelectContent className='bg-secondary text-white'>
+									{guild?.data.roles.map((role) => (
+										<SelectItem key={role.id} value={role.id}>{role.name}</SelectItem>
+									))}
+								</SelectContent>
+							</Select>
+							<FormDescription>
+								{formDescription}
+							</FormDescription>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+			</form>
+		</Form>
 	);
 };
 
-export const RoleSelectForm: ControlledInput<Omit<SelectMenuProps, 'value' | 'onChange'>> = ({
-	control,
-	controller,
-	showHeader,
-	...props
-}) => {
-	const form = useForm();
-
-	return (
-		<div className='grid gap-3'>
-			<div className={`flex flex-col width-[100%] relative border-r-3xl ${showHeader ? 'shadow bg-secondary p-5' : ''} rounded-3xl`}>
-				{showHeader ? (
-					<section>
-						<label className="block text-start mr-3 transition-all duration-300 opacity-100 text-base font-medium mb-0">
-							<h2 className="text-2xl font-semibold">{control.label}</h2>
-							<p className="text-gray-500 mb-3">{control.description}</p>
-						</label>
-						<Spacer />
-					</section>
-				) : <></>}
-				<Form {...form}>
-					<FormField
-						control={controller.control}
-						name={controller.name}
-						render={({ field }) => (
-							<FormItem className='text-white'>
-								<RoleSelect {...field} {...props} />
-							</FormItem>
-						)}
-					/>
-				</Form>
-			</div>
-		</div>
-	);
-};
-
-export const MultiRoleSelect = ({
+/**
+ * export const MultiRoleSelect = ({
 	value, onChange, ...rest
 }: {
 	value: SelectMenuOptionArray | string[];
@@ -153,3 +124,4 @@ export const MultiRoleSelectForm: ControlledInput<Omit<SelectMenuProps, 'value' 
 		</div>
 	);
 };
+ */
