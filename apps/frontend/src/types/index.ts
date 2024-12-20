@@ -1,18 +1,12 @@
 import { IconType } from 'react-icons';
-import type {
-	ControlledInput,
-	FormProps,
-	SelectMenuProps,
-	SelectMenuOptionArray,
-	UseFormRender,
-	UseFormRenderResult,
-} from './formTypes';
+import type { FormProps, SelectMenuOptionArray } from './formTypes';
 
 import type {
 	APIGuild,
 	RESTGetAPIGuildChannelsResult,
 } from 'discord-api-types/v10';
 import { UseFormReturn } from 'react-hook-form';
+import { ReactElement } from 'react';
 
 export type EvelynFeature = {
 	/** The name of the feature. */
@@ -88,11 +82,22 @@ export type FormParams = {
 	formDescription?: string;
 }
 
+type SubmitFn<T> = (data: FormData | string) => Promise<T>;
+type UseFormRender<T = unknown> = (data: T, onSubmit: SubmitFn<T>) => UseFormRenderResult;
+type UseFormRenderResult = {
+	/** The component data of the feature. */
+    component: ReactElement;
+    /** Indicates if the current change(s) can be saved. */
+    canSave?: boolean;
+    /** The function that is called upon submitting. */
+    onSubmit: () => void;
+    /** The function that resets the current value. */
+    reset?: () => void;
+};
+
 export type {
 	FormProps,
 	UseFormRender,
 	UseFormRenderResult,
-	ControlledInput,
-	SelectMenuProps,
 	SelectMenuOptionArray,
 };
