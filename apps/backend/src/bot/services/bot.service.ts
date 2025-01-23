@@ -53,6 +53,8 @@ export class BotService {
 		const member = await this.api.users.get(user.id);
 
 		if (member.id !== process.env.OWNER_ID) 
-			throw new HttpException('Unauthorized', HttpStatus.FORBIDDEN) 
+			throw new HttpException('Unauthorized', HttpStatus.FORBIDDEN);
+
+		return true;
 	}
 }
