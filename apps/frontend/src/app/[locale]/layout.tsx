@@ -1,3 +1,4 @@
+import { NextAuthProvider, QueryProvider } from '@components/providers';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { CookieConsent } from '@components/ui';
@@ -5,6 +6,12 @@ import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
 import type { ReactNode } from 'react';
 import '@/styles/global.css';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+	title: 'Evelyn',
+	description: 'PLACEHOLDER',
+};
 
 export default async function LocaleLayout(
 	props: {
@@ -30,12 +37,16 @@ export default async function LocaleLayout(
 	const messages = await getMessages();
 
 	return (
-		<html lang={locale}>
+		<html lang={locale} suppressHydrationWarning={true}>
 			<body>
-				<NextIntlClientProvider locale={locale} messages={messages}>
-					{children}
-					<CookieConsent />
-				</NextIntlClientProvider>
+				<NextAuthProvider>
+					<QueryProvider>
+						<NextIntlClientProvider locale={locale} messages={messages}>
+							{children}
+							<CookieConsent />
+						</NextIntlClientProvider>
+					</QueryProvider>
+				</NextAuthProvider>
 			</body>
 		</html>
 	);
