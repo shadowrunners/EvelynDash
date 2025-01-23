@@ -49,6 +49,7 @@ export class GuildController {
 				approximate_member_count: data.approximate_member_count,
 				approximate_channel_count: channels.length,
 				channels,
+				roles: data.roles,
 				textChannels: channels.filter((channel) => channel.type === ChannelType.GuildText).length,
 				voiceChannels: channels.filter((channel) => channel.type === ChannelType.GuildVoice).length,
 				ownerID: data?.owner_id,
@@ -97,7 +98,7 @@ export class GuildController {
 	@Get('/features/antiphishing')
 	async getAPFeature(@Param('guild') guild: string) {
 		const data = await this.guilds.getFeature(guild, 'antiphishing');
-		if (!data) return null;
+		if (!data?.antiphishing.enabled) return null;
 
 		return data;
 	}
