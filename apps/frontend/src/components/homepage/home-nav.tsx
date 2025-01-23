@@ -1,78 +1,26 @@
-'use client';
-
-import { useRouter, Link as LocalizedLink } from '@/i18n/routing';
-import { useSession } from 'next-auth/react';
-import { type ReactNode } from 'react';
+import { Link as LocalizedLink } from '@/i18n/routing';
+import { Fragment, use } from 'react';
 import Link from 'next/link';
 
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { getServerSession, Session } from 'next-auth';
+
 import { NavigationMenu, NavigationMenuItem, NavigationMenuList, NavigationMenuLink, navigationMenuTriggerStyle } from '../ui/navigation-menu';
-import { Button, Sheet, SheetContent, SheetTrigger } from '@/components/ui';
-
-import { RiSlashCommands2 } from "react-icons/ri";
-import { FaQuestion } from "react-icons/fa6";
-import { SiReadthedocs } from "react-icons/si";
-import { FaSignInAlt } from "react-icons/fa";
-import { MdDashboard } from "react-icons/md";
-import { RxHamburgerMenu } from 'react-icons/rx';
-import { LuLoader2, LuHome } from 'react-icons/lu';
+import { Menu, Home, Slash, Book, CircleHelp, LogIn, LayoutDashboard, Loader2 } from 'lucide-react';
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from '../ui/drawer';
 import { useTranslations } from 'next-intl';
+import { Button } from '@UI';
 
-type NavItems = {
-	component: ReactNode;
-}[];
+const navItems = [
+	{ key: 'nav.home', href: '/', label: 'nav.home', icon: <Home className='mr-1.5' /> },
+	{ key: 'nav.commands', href: '/commands', label: 'nav.commands', icon: <Slash className='mr-1.5' /> },
+	{ key: 'nav.faq', href: '/faq', label: 'nav.faq', icon: <CircleHelp className='mr-1.5' /> },
+	{ key: 'nav.documentation', href: 'https://evelyndocs.vercel.app', label: 'nav.documentation', icon: <Book className='mr-1.5' />, isExternal: true },
+];
 
 export function Navbar() {
-	const t = useTranslations("home");
-
-	const router = useRouter();
-	const { data: session, status } = useSession();
-
-	const navItems: NavItems = [
-		{
-			component: (
-				<NavigationMenuItem key='nav_home'>
-					<LocalizedLink href="/" legacyBehavior passHref>
-						<NavigationMenuLink className={navigationMenuTriggerStyle()}>
-							{t("nav.home")}
-						</NavigationMenuLink>
-					</LocalizedLink>
-				</NavigationMenuItem>
-			),
-		},
-		{
-			component: (
-				<NavigationMenuItem key='nav_commands'>
-					<LocalizedLink href="/commands" legacyBehavior passHref>
-						<NavigationMenuLink className={navigationMenuTriggerStyle()}>
-							{t("nav.commands")}
-						</NavigationMenuLink>
-					</LocalizedLink>
-				</NavigationMenuItem>
-			),
-		},
-		{
-			component: (
-				<NavigationMenuItem key='nav_faq'>
-					<LocalizedLink href="/faq" legacyBehavior passHref>
-						<NavigationMenuLink className={navigationMenuTriggerStyle()}>
-							{t("nav.faq")}
-						</NavigationMenuLink>
-					</LocalizedLink>
-				</NavigationMenuItem>
-			),
-		},
-		{
-			component: (
-				<NavigationMenuItem key='nav_docs'>
-					<Link href="https://PLACEHOLDER.vercel.app" legacyBehavior passHref>
-						<NavigationMenuLink className={navigationMenuTriggerStyle()}>
-							{t("nav.documentation")}
-						</NavigationMenuLink>
-					</Link>
-				</NavigationMenuItem>
-			),
-		},
-	];
+	const t = useTranslations('home');
+	const session = use(getServerSession(authOptions));
 
 	return (
 		<NavigationMenu className='font-sans flex max-w-6xl justify-between items-center text-white top-0 backdrop-blur-md z-50 border p-5 sticky rounded-2xl mt-2 mx-auto'>
@@ -82,71 +30,91 @@ export function Navbar() {
 				</NavigationMenuItem>
   			</NavigationMenuList>
 			<NavigationMenuList className='list-none sm:flex hidden flex-1 justify-center' key='nav_buttons'>
-				{navItems.map((item) => item.component)}
+				{navItems.map((item) => (
+					(
+						<NavigationMenuItem key={item.key}>
+							{item.isExternal
+								? (
+									<Link href={item.href} legacyBehavior passHref>
+										<NavigationMenuLink className={navigationMenuTriggerStyle()}>
+											{t(item.key)}
+										</NavigationMenuLink>
+									</Link>
+								)
+								: (
+									<LocalizedLink href={item.href} legacyBehavior passHref>
+										<NavigationMenuLink className={navigationMenuTriggerStyle()}>
+											{t(item.key)}
+										</NavigationMenuLink>
+									</LocalizedLink>
+								)
+							}
+						</NavigationMenuItem>
+					)
+				))}
 			</NavigationMenuList>
 			<NavigationMenuList className='list-none' key='nav_dash_button'>
-				{status === 'loading' ? <LuLoader2 className='animate-spin sm:flex hidden' /> : <Button
-					onClick={async () => {
-						if (!session) return router.push('/auth/signin');
-						else return router.push('/pickaguild');
-					}}
-					className='font-sans bg-black/40 sm:flex hidden'
-					variant='ghost'
-				>
-					{status === 'unauthenticated' ? t("nav.btn_notsignedin") : t("nav.btn_signedin") }
-				</Button>}
-
+				<NavigationMenuItem>
+					{session
+						? <LocalizedLink href={session ? '/pickaguild' : '/auth/signin'} legacyBehavior passHref>
+							<NavigationMenuLink className={`${navigationMenuTriggerStyle()} sm:flex hidden`}>
+								{session ? t('nav.btn_signedin') : t('nav.btn_notsignedin')}
+							</NavigationMenuLink>
+						</LocalizedLink>
+						: <Loader2 className='animate-spin sm:flex hidden' />
+					}
+				</NavigationMenuItem>
 				<NavigationMenuItem className='sm:hidden inline-flex' key='nav_mobile'>
-					<MobileNavbar translations={t} status={status} />
+					<MobileNavbar t={t} session={session} />
 				</NavigationMenuItem>
 			</NavigationMenuList>
 		</NavigationMenu>
 	);
 }
 
-function MobileNavbar({ translations, status }: { translations: (key: string) => string, status: 'authenticated' | 'unauthenticated' | 'loading' }) {
+function MobileNavbar({ t, session }: { t: (key: string) => string, session: Session | null }) {
+	// hey snoopy, yes there is a header here that you'll never see because this component extends Dialog that shit is required
+	// do not remove it unless you want to deal with a "DialogTitle isn't present" error.
+
 	return (
-		<Sheet>
-			<SheetTrigger>
-				<RxHamburgerMenu className='w-[20px] h-[20px]' />
-			</SheetTrigger>
-			<SheetContent className='font-sans bg-black text-white p-6 flex flex-col' side='right'>
-				<LocalizedLink href='/home' legacyBehavior key='nav_home_mobile'>
-					<a className='flex items-center hover:bg-white hover:text-black p-2 rounded-xl'>
-						<LuHome className='inline-flex mr-1.5 items-start' /> {translations("nav.home")}
-					</a>
-				</LocalizedLink>
-				
-				<LocalizedLink href='/commands' legacyBehavior key='nav_commands_mobile'>
-					<a className='flex items-center hover:bg-white hover:text-black p-2 rounded-xl'>
-						<RiSlashCommands2 className='inline-flex mr-1.5 items-start' /> {translations("nav.commands")}
-					</a>
-				</LocalizedLink>
-
-				<LocalizedLink href='/faq' legacyBehavior key='nav_faq_mobile'>
-					<a className='flex items-center hover:bg-white hover:text-black p-2 rounded-xl'>
-						<FaQuestion className='inline-flex mr-1.5 items-start' /> {translations("nav.faq")}
-					</a>
-				</LocalizedLink>
-
-				<Link href='https://evelyndocs.vercel.app' legacyBehavior key='nav_docs_mobile'>
-					<a className='flex items-center hover:bg-white hover:text-black p-2 rounded-xl'>
-						<SiReadthedocs className='inline-flex mr-1.5 items-start' /> {translations("nav.documentation")}
-					</a>
-				</Link>
-
-				<LocalizedLink href={status === 'unauthenticated' ? '/auth/signin' : '/pickaguild' } legacyBehavior key='nav_login_mobile'>
-					{status === 'unauthenticated' ? (
-						<a className='flex items-center hover:bg-white hover:text-black p-2 rounded-xl'>
-							<FaSignInAlt className='inline-flex mr-1.5 items-start' /> {translations("nav.btn_notsignedin")}
-						</a>
+		<Drawer>
+			<DrawerTrigger>
+				<Menu className='w-[20px] h-[20px]' />
+			</DrawerTrigger>
+			<DrawerContent className='bg-black text-white p-6 flex flex-col'>
+				<DrawerHeader className='hidden'>
+					<DrawerTitle>
+						Theoretically you shouldn't be seeing this. However if you see this, this is here so this doesn't error out.
+					</DrawerTitle>
+				</DrawerHeader>
+				{navItems.map((item) => (
+					<Fragment key={item.key}>
+						{item.isExternal
+							? (
+								<Link href={item.href} className='mb-1 flex items-center hover:bg-white hover:text-black p-2 rounded-xl'>
+									{item.icon} {t(item.key)}
+								</Link>
+							)
+							: (
+								<LocalizedLink href={item.href} className='mb-1 flex items-center hover:bg-white hover:text-black p-2 rounded-xl'>
+									{item.icon} {t(item.key)}
+								</LocalizedLink>
+							)
+						}
+					</Fragment>
+				))}
+				<LocalizedLink href={session ? '/auth/signin' : '/pickaguild'} className='mb-1 flex items-center hover:bg-white hover:text-black p-2 rounded-xl'>
+					{session ? (
+						<Fragment>
+							<LogIn className='inline-flex mr-1.5 items-start' /> {t('nav.btn_notsignedin')}
+						</Fragment>
 					) : (
-						<a className='flex items-center hover:bg-white hover:text-black p-2 rounded-xl'>
-							<MdDashboard className='inline-flex mr-1.5 items-start' /> {translations("nav.btn_signedin")}
-						</a>
+						<Fragment>
+							<LayoutDashboard className='inline-flex mr-1.5 items-start' /> {t('nav.btn_signedin')}
+						</Fragment>
 					) }
 				</LocalizedLink>
-			</SheetContent>
-		</Sheet>
+			</DrawerContent>
+		</Drawer>
 	);
 }
