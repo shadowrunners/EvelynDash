@@ -16,12 +16,12 @@ export class GuildsService {
 
 	/** Gets the full information regarding the guild's config from the DB. */
 	public async get(guild: string) {
-		return await this.guilds.findOne({ guildId: guild });
+		return await this.guilds.findOne({ guildId: guild }).select('-_id');
 	}
 
 	/** Gets the full information regarding a guild's specific feature. */
 	public async getFeature(guildId: string, feature: Features) {
-		return await this.guilds.findOne({ guildId }).select(feature);
+		return await this.guilds.findOne({ guildId }).select(`${feature} -_id`);
 	}
 
 	public async update(guild: string, data: object) {
