@@ -43,4 +43,4 @@ export default function middleware(req: NextRequest) {
 		return (authMiddleware as any)(req);
 	}
 }
-export const config = { matcher: [ '/', `/(de|en)/:path`, '/guilds/:path*', '/pickaguild/:path*', '/((?!api|images|_next|.*\\\\..*).*)'] };
+export const config = { matcher: [ '/', '/(de|en)/:path', '/guilds/:path*', '/pickaguild/:path*', '/((?!api|images|_next|.*\\\\..*).*)'] };
