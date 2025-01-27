@@ -6,7 +6,7 @@ export default function PrivacyPage() {
 
 	return (
 		<div className='flex justify-center items-start text-white mt-4'>
-			<div className="xl:max-w-[1280px] w-full">
+			<div className="max-w-screen-lg w-full">
 				<section className='flex md:flex-row flex-col'>
 					<div className="flex-1 flex justify-center items-start xl:mb-[80px] flex-col xl:px-0 sm:px-16 px-6 relative">
 						<div className='h-[20rem] w-full bg-black bg-grid-small-white/[0.2] relative flex items-center justify-center'>
