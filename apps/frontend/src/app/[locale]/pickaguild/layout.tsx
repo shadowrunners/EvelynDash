@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { Navbar, Footer } from '@/components/homepage';
 
 export default function GuildLayout({ children }: { children: ReactNode }) {
