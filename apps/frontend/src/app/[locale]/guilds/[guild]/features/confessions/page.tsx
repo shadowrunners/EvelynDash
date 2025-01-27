@@ -7,6 +7,7 @@ import { z } from 'zod';
 import { useFeature } from '@/components/contexts/featurecontext';
 import { ChannelSelectForm } from '@/components/forms';
 import { Savebar } from '@/components/ui/savebar';
+import FeatureHeader from '@/components/ui/featureheader';
 
 const FormSchema = z.object({
 	channel: z
@@ -29,13 +30,10 @@ export default function ConfessionsFeature() {
 
 	return (
 		<div>
-			<header className="bg-primary p-4 rounded-xl mt-2">
-				<h1 className="text-xl font-semibold">{t('features.confessions.title')}</h1>
-				<p className="text-dimWhite">{t('features.confessions.description')}</p>
-			</header>
+			<FeatureHeader name={t('features.confessions.title')} description={t('features.confessions.description')} />
 
 			<div className="flex-row grid grid-cols-1 md:grid-cols-3 2xl:grid-cols-3 mt-5">
-				<ChannelSelectForm form={form} formName='channel' formLabel='Channel' formDescription='PLACEHOLDER' />
+				<ChannelSelectForm form={form} formName='channel' formLabel='Channel' formDescription='The channel where confessions will sent in.' />
 			</div>
 
 			<Savebar feature='confessions' form={form} />

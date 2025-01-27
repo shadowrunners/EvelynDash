@@ -8,11 +8,12 @@ import { useFeature } from '@/components/contexts/featurecontext';
 import { ChannelSelectForm, TextForm } from '@/components/forms';
 import { Savebar } from '@/components/ui/savebar';
 import { EmbedForm } from '@/components/forms/embedform';
+import FeatureHeader from '@/components/ui/featureheader';
 
 const FormSchema = z.object({
 	channel: z
 		.string({
-			required_error: 'Select a channel in order to receive logs.',
+			required_error: 'Select a channel in order to receive welcome messages.',
 		}),
 	embed: z.object({
 		content: z.string(),
@@ -58,16 +59,14 @@ export default function WelcomeFeature() {
 
 	return (
 		<div>
-			<h1 className="text-xl font-semibold">{t('features.logs.title')}</h1>
-			<p className="text-dimWhite">{t('features.logs.description')}</p>
+			<FeatureHeader name={t('features.welcome.title')} description={t('features.welcome.description')} />
 
 			<div className="flex-row grid grid-cols-1 md:grid-cols-3 2xl:grid-cols-3 mt-5 gap-4">
-				<ChannelSelectForm form={form} formName='channel' formLabel='Channel' formDescription='PLACEHOLDER' />
+				<ChannelSelectForm form={form} formName='channel' formLabel='Channel' formDescription='The channel where the welcome message will be sent.' />
 				<TextForm form={form} formName='embed.content' formLabel='Message' formDescription='The message that will be sent alongside the embed.' />
 			</div>
 
 			<EmbedForm form={form} formName='embed' formLabel='Embed Settings' formDescription='Manage the embed that will be sent alongside the message.' />
-
 			<Savebar feature='welcome' form={form} />
 		</div>
 	);

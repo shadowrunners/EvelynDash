@@ -7,6 +7,7 @@ import { z } from 'zod';
 import { useFeature } from '@/components/contexts/featurecontext';
 import { ChannelSelectForm } from '@/components/forms';
 import { Savebar } from '@/components/ui/savebar';
+import FeatureHeader from '@/components/ui/featureheader';
 
 const FormSchema = z.object({
 	channel: z
@@ -20,23 +21,20 @@ export default function LogsFeature() {
 	const form = useForm<z.infer<typeof FormSchema>>({
 		resolver: zodResolver(FormSchema),
 		defaultValues: {
-			channel: '',
+			channel: feature?.data.channel || '',
 		},
 	});
 	const t = useTranslations('dash');
 
-	console.log(feature);
-
 	return (
 		<div>
-			<h1 className="text-xl font-semibold">{t('features.logs.title')}</h1>
-			<p className="text-dimWhite">{t('features.logs.description')}</p>
+			<FeatureHeader name={t('features.logs.title')} description={t('features.logs.description')} />
 
 			<div className="flex-row grid grid-cols-1 md:grid-cols-3 2xl:grid-cols-3 mt-5">
 				<ChannelSelectForm form={form} formName='channel' formLabel='Channel' formDescription='PLACEHOLDER' />
 			</div>
 
-			<Savebar form={form} />
+			<Savebar feature='logs' form={form} />
 		</div>
 	);
 }
