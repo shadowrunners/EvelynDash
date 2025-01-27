@@ -16,25 +16,25 @@ export const QueryStatusHelper = ({
 	children: ReactNode;
 }) => {
 	switch (status) {
-		case 'error': {
-			return (
-				<Error errorMessage={error} refetch={refetch} />
-			)
-		}
-		case 'pending': {
-			return (
-				<Loader />
-			);
-		}
-		case 'success': {
-			return (
-				<Fragment>{children}</Fragment>
-			)
-		}
-		default: {
-			return (
-				<></>
-			);
-		}
+	case 'error': {
+		return (
+			<Error errorMessage={error} refetch={refetch} />
+		);
+	}
+	case 'pending': {
+		return (
+			<Loader />
+		);
+	}
+	case 'success': {
+		return (
+			<Fragment>{children}</Fragment>
+		);
+	}
+	default: {
+		return (
+			<></>
+		);
+	}
 	}
 };
