@@ -1,7 +1,7 @@
 import DiscordProvider from 'next-auth/providers/discord';
-import NextAuth from 'next-auth';
+import NextAuth, { type NextAuthOptions } from 'next-auth';
 
-const handler = NextAuth({
+export const authOptions: NextAuthOptions = {
 	providers: [
 		DiscordProvider({
 			clientId: process.env.NEXT_PUBLIC_CLIENT_ID,
@@ -30,6 +30,7 @@ const handler = NextAuth({
 		signOut: '/',
 		signIn: '/auth/signin',
 	},
-});
+};
 
+const handler = NextAuth(authOptions);
 export { handler as GET, handler as POST };
