@@ -1,11 +1,14 @@
 import { Avatar, AvatarImage, AvatarFallback } from './avatar';
 import { Button } from './button';
 import { Card, CardFooter, CardContent, CardTitle, CardHeader, CardDescription } from './card';
+import { CardSpotlight } from './cardspotlight';
 import { CookieConsent } from './cookieconsent';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuItem, DropdownMenuSeparator } from './dropdown-menu';
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from './drawer';
 import { Form, FormDescription, FormMessage, FormField, FormItem, FormLabel, FormControl } from './form';
 import { Input } from './input';
 import { Label } from './label';
+import { NavigationMenu, NavigationMenuItem, NavigationMenuList, NavigationMenuLink, navigationMenuTriggerStyle } from './navigation-menu';
 import { Popover, PopoverContent, PopoverTrigger } from './popover';
 import { Switch } from './switch';
 import { SelectMenu } from './selectmenu';
@@ -29,6 +32,7 @@ export {
 	CardTitle,
 	CardContent,
 	CardDescription,
+	CardSpotlight,
 	CookieConsent,
 	DropdownMenu,
 	DropdownMenuContent,
@@ -36,6 +40,11 @@ export {
 	DropdownMenuLabel,
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
+	Drawer,
+	DrawerContent,
+	DrawerHeader,
+	DrawerTitle,
+	DrawerTrigger,
 	Form,
 	FormControl,
 	FormDescription,
@@ -45,6 +54,11 @@ export {
 	FormMessage,
 	Input,
 	Label,
+	NavigationMenu,
+	NavigationMenuItem,
+	NavigationMenuList,
+	NavigationMenuLink,
+	navigationMenuTriggerStyle,
 	Popover,
 	PopoverContent,
 	PopoverTrigger,
