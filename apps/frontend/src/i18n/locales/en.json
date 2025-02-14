@@ -168,28 +168,29 @@
         "update_notice": "We may update this Privacy Policy to reflect changes in our services or legal obligations. Updates will be posted here with a revised 'Last Updated' date and on our Discord server."
     },
     "dash": {
-        "servers": {
-            "title": "Welcome back",
-            "description": "Select a server to manage your Evelyn experience."
-        },
-        "button": {
-            "enablefeature": "Enable",
-            "disablefeature": "Disable",
-            "configfeature": "Configure",
-            "invite": "Invite Evelyn",
-            "save": "Save",
-            "discard": "Discard",
-            "tryagain": "Try Again"
+        "sidebar": {
+            "title": "Evelyn | Dashboard [BETA]",
+            "labels": {
+                "back_button": "Back to Guild Selection",
+                "features": "Features"
+            },
+            "user": {
+                "items": {
+                    "servers": "Servers",
+                    "developer_panel": "Developer Panel",
+                    "sign_out": "Sign Out"
+                }
+            }
         },
         "features": {
             "name": "Features",
-            "automod": {
-                "title": "AutoMod",
-                "description": "Protect your sever against malicious actors using AI powered auto moderation."
-            },
             "antiphishing": {
                 "title": "Anti-Phishing",
                 "description": "Protects your server against fraudulent links that steal users information."
+            },
+            "automod": {
+                "title": "AutoMod",
+                "description": "Protect your sever against malicious actors using AI powered auto moderation."
             },
             "confessions": {
                 "title": "Confessions",
@@ -227,6 +228,15 @@
         "banner": {
             "title": "Welcome back, runner.",
             "description": "What would you like to configure?"
+        },
+        "buttons": {
+            "enablefeature": "Enable",
+            "disablefeature": "Disable",
+            "configfeature": "Configure",
+            "invite": "Invite Evelyn",
+            "save": "Save",
+            "discard": "Discard",
+            "tryagain": "Try Again"
         }
     },
     "breadcrumbs": {
