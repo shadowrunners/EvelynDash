@@ -1,13 +1,8 @@
-import type { CustomFeatures } from '@/types/features';
-import type { SPAPIGuild, SPAPIPartialGuild } from '@/types';
 import { QueryClient, useMutation, useQuery } from '@tanstack/react-query';
-import {
-	disableFeature,
-	enableFeature,
-	updateFeature,
-} from '@/hooks/fetch';
+import type { SPAPIGuild, SPAPIPartialGuild } from '@/types';
 import { signOut, useSession } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
+import { useRouter } from '@/i18n/routing';
 
 export const client = new QueryClient({
 	defaultOptions: {
@@ -22,6 +17,13 @@ export const client = new QueryClient({
 	},
 });
 
+/**
+ * A universal function used across all hooks to fetch data from the API.
+ * @param endpoint The API endpoint that the feature will hit to get the feature specific data.
+ * @param data The data that will be sent to the API to update feature data. (optional; used only for updating feature data)
+ * @param method The method used to hit the API.
+ * @param session The user's access token for API authentication purposes.
+ */
 async function useAPI({
 	endpoint,
 	data,
@@ -35,17 +37,16 @@ async function useAPI({
 }) {
 	let options: RequestInit;
 
-	console.log(data);
 	if (data) {
 		options = {
 			method,
 			body: JSON.stringify(data),
 			headers: {
 				Authorization: `Bearer ${session}`,
-				'Content-Type': 'application/json',
 			},
 		};
-	} else {
+	}
+	else {
 		options = {
 			method,
 			headers: {
@@ -53,10 +54,6 @@ async function useAPI({
 			},
 		};
 	}
-
-	console.log(options);
-
-
 
 	const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${endpoint}`, options);
 
@@ -73,6 +70,7 @@ async function useAPI({
 	return await res.json();
 }
 
+/** Retrieves the list of guilds where the user is administrator. */
 export function useGuilds() {
 	const { session, status } = useAccessToken();
 
@@ -85,6 +83,7 @@ export function useGuilds() {
 	}, client);
 }
 
+/** Retrieves data about the guild that the user is currently configuring. */
 export function useCurrentGuild() {
 	const { session, status } = useAccessToken();
 	const guildId = useGuildId();
@@ -93,11 +92,12 @@ export function useCurrentGuild() {
 		queryFn: async () => {
 			return await useAPI({ endpoint: `/guilds/${guildId}`, method: 'GET', session }) as SPAPIGuild;
 		},
-		queryKey: ['specific_guild'],
+		queryKey: ['current_guild'],
 		enabled: status === 'authenticated',
 	}, client);
 }
 
+/** Retrieves feature related data for the currently selected guild. */
 export function useFeature<T>(feature: string) {
 	const { session, status } = useAccessToken();
 	const guildId = useGuildId();
@@ -111,96 +111,57 @@ export function useFeature<T>(feature: string) {
 	}, client);
 }
 
-
-type UpdateFeatureOptions = {
-  guild: string;
-  feature: keyof CustomFeatures;
-  options: FormData | string;
-};
-
+/** Updates feature related data for the currently selected guild. */
 export function useUpdateFeature() {
 	const { session } = useAccessToken();
 	const guildId = useGuildId();
 
 	return useMutation({
 		mutationFn: async ({ feature, data }: { feature: string; data: FormData; }) => {
-			return await await useAPI({ endpoint: `/guilds/${guildId}/features/${feature}`, data, method: 'PATCH', session });
+			return await useAPI({ endpoint: `/guilds/${guildId}/features/${feature}`, data, method: 'PATCH', session });
 		},
 		mutationKey: ['feature_update'],
 	}, client);
 }
 
-
-export function useUpdateFeatureMutation() {
+/** Disables the feature for the currently selected guild. */
+export function useDisableFeature() {
 	const { session } = useAccessToken();
+	const guildId = useGuildId();
+	const router = useRouter();
 
 	return useMutation({
-		mutationFn: async (options: UpdateFeatureOptions) => {
-			return await updateFeature(options.guild, options.feature, options.options, session!);
+		mutationFn: async ({ feature }: { feature: string }) => {
+			return await useAPI({ endpoint: `/guilds/${guildId}/features/${feature}`, method: 'DELETE', session });
 		},
-		onSuccess: (updated, options) => {
-			const key = Keys.features(options.guild, options.feature);
-			return client.setQueryData(key, updated);
+		onSuccess: () => {
+			// sending the user back because the api literally has zero data
+			router.back();
+		},
+		mutationKey: ['feature_delete'],
+	}, client);
+}
+
+/** Enables the feature for the currently selected guild. */
+export function useEnableFeature() {
+	const { session } = useAccessToken();
+	const guildId = useGuildId();
+
+	return useMutation({
+		mutationFn: async ({ feature }: { feature: string }) => {
+			return await useAPI({ endpoint: `/guilds/${guildId}/features/${feature}`, method: 'POST', session });
 		},
 	}, client);
 }
 
-// export function updateFeatureData(feature: string, data: FormData) {
-//	const { session, status } = useAccessToken();
-//	const guildId = useGuildId();
-
-//	return useQuery({
-//		queryFn: async () => await updateFeature(guildId, feature, data, session!),
-//		queryKey: ['feature_data'],
-//		enabled: status === 'authenticated',
-//	});
-// }
-
+// TODO: implement this
+// eslint-disable-next-line no-empty-function
 export function useDev() {}
 
 /** Gets the access token from the session. */
 function useAccessToken() {
 	const { data: session, status } = useSession();
 	return { session: String(session?.accessToken), status };
-}
-
-const Keys = {
-	login: ['login'],
-	guild_info: (guild: string) => ['guild_info', guild],
-	features: (guild: string, feature: string) => ['feature', guild, feature],
-	guildRoles: (guild: string) => ['guild_roles', guild],
-	guildChannels: (guild: string) => ['guild_channel', guild],
-};
-
-
-type EnableFeatureOptions = { guild: string; feature: string; enabled: boolean };
-export function useEnableFeatureMutation() {
-	const { session } = useAccessToken();
-
-	return useMutation({
-		mutationFn: async ({ enabled, guild, feature }: EnableFeatureOptions) => {
-			if (enabled) return await enableFeature(guild, feature, session!);
-			return await disableFeature(guild, feature, session!);
-		},
-		onSuccess: async (_, { guild, feature, enabled }) => {
-			await client.invalidateQueries({ queryKey: Keys.features(guild, feature) });
-			client.setQueryData<HVGuild | null>(Keys.guild_info(guild), (prev) => {
-				if (prev === null) return null;
-
-				if (enabled) return {
-					...prev,
-					enabledFeatures: prev?.enabledFeatures?.includes(feature)
-						? prev.enabledFeatures
-						: [...prev?.enabledFeatures as string[], feature],
-				};
-
-				else return {
-					...prev,
-					enabledFeatures: prev?.enabledFeatures?.filter((f) => f !== feature),
-				};
-			});
-		},
-	}, client);
 }
 
 export function useGuildId(): string {
